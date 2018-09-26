@@ -10,7 +10,7 @@
 #include "direction.h"
 #include "ray.h"
 
-//TODO: make a propper contructor
+//TODO: make a proper constructor
 
 
 class triangle {

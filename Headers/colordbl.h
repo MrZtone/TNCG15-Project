@@ -1,15 +1,13 @@
-//
-// Created by Ola Steen on 2018-09-12.
-//
 
 #ifndef PROJECT_COLORDBL_H
 #define PROJECT_COLORDBL_H
 
+#include "../glm/vec3.hpp"
 
 class colordbl {
 
 private:
-    double r, g, b;
+    glm::vec3 color;
 
 public:
     colordbl();

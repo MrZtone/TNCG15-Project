@@ -1,6 +1,3 @@
-//
-// Created by Ola Steen on 2018-09-12.
-//
 
 #ifndef PROJECT_VERTEX_H
 #define PROJECT_VERTEX_H
@@ -11,7 +8,6 @@ class vertex
 {
 private:
     glm::vec4 coordinates;
-
 
 public:
 
