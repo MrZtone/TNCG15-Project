@@ -12,7 +12,6 @@
 class direction
 {
 private:
-    double x, y, z;
     glm::vec3 vectorCoordinates;
 
 public:
