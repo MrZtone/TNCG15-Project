@@ -6,14 +6,10 @@
 
 colordbl::colordbl()
 {
-    r=0.0;
-    g=0.0;
-    b=0.0;
+    color = glm::vec3(0.0, 0.0, 0.0);
 }
 
 colordbl::colordbl(double R, double G, double B)
 {
-    r=R;
-    g=G;
-    b=B;
+    color = glm::vec3(R, G, B);
 }
