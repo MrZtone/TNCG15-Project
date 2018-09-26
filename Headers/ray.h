@@ -16,6 +16,8 @@ private:
 public:
     ray();
     ray(vertex S, vertex E);
+    vertex startPoint();
+    vertex endPoint();
 
 };
 

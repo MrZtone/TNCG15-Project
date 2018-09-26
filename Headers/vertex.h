@@ -6,6 +6,8 @@
 
 class vertex
 {
+    friend class triangle;
+
 private:
     glm::vec4 coordinates;
 
@@ -13,6 +15,8 @@ public:
 
     vertex();
     vertex(double X, double Y, double Z, double W);
+    vertex(glm::vec4 c);
+
 };
 
 #endif //PROJECT_VERTEX_H

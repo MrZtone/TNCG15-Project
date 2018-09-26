@@ -9,3 +9,13 @@ ray::ray(vertex S, vertex E)
     start=S;
     end=E;
 }
+
+vertex ray::startPoint()
+{
+    return start;
+}
+
+vertex ray::endPoint()
+{
+    return end;
+}
