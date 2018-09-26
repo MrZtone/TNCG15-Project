@@ -5,10 +5,13 @@
 #ifndef PROJECT_VERTEX_H
 #define PROJECT_VERTEX_H
 
+#include "../glm/vec4.hpp"
+
 class vertex
 {
 private:
-    double x, y, z, w;
+    glm::vec4 coordinates;
+
 
 public:
 

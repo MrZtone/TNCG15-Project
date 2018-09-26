@@ -7,10 +7,13 @@
 
 #endif //PROJECT_DIRECTION_H
 
+#include "../glm/vec3.hpp"
+
 class direction
 {
 private:
     double x, y, z;
+    glm::vec3 vectorCoordinates;
 
 public:
     direction();

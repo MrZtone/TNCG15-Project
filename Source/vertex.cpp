@@ -7,16 +7,10 @@
 
 vertex::vertex()
 {
-    x=0.0;
-    y=0.0;
-    z=0.0;
-    w=0.0;
+    coordinates = glm::vec4(0.0, 0.0, 0.0, 0.0);
 }
 
 vertex::vertex(double X, double Y, double Z, double W)
 {
-    x=X;
-    y=Y;
-    z=Z;
-    w=W;
+    coordinates = glm::vec4(X, Y, Z, W);
 }

@@ -11,7 +11,7 @@
 class scene {
 
 private:
-    vertex s_vertices[24];
+     triangle walls[24];
 
 public:
 

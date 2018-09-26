@@ -6,14 +6,10 @@
 
 direction::direction()
 {
-    x=0.0;
-    y=0.0;
-    z=0.0;
+    vectorCoordinates = glm::vec3(0.0, 0.0, 0.0);
 }
 
 direction::direction(double X, double Y, double Z)
 {
-    x=X;
-    y=Y;
-    z=Z;
+    vectorCoordinates = glm::vec3(X, Y, Z);
 }
