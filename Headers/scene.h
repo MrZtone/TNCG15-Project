@@ -10,12 +10,14 @@
 
 class scene {
 
-private:
-     triangle walls[24];
-
 public:
-
+    static const int SIZE = 24;
     scene();
+    triangle& getWallTriangle(int index);
+
+private:
+     triangle walls[SIZE];
+
 };
 
 

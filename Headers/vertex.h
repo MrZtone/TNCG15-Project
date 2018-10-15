@@ -7,6 +7,7 @@
 class vertex
 {
     friend class triangle;
+    friend class ray;
 
 private:
     glm::vec4 coordinates;

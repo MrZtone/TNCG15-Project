@@ -17,6 +17,7 @@ private:
 
 public:
     pixel();
+    pixel(ray r);
 
 
 };

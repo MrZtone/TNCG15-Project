@@ -18,6 +18,7 @@ public:
     ray(vertex S, vertex E);
     vertex startPoint();
     vertex endPoint();
+    vertex getPointOnRay(float t);
 
 };
 

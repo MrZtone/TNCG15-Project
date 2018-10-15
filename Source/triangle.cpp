@@ -27,6 +27,16 @@ vertex triangle::rayIntersection(ray arg)
 
     glm::vec3 Tuv= glm::vec3(glm::dot(Q,E2), glm::dot(P,T), glm::dot(Q,D)) * (1/glm::dot(P,E2));
 
-    //TODO Check that the values t, u and v in Tuv are correct
-
+    if(Tuv.y > FLT_EPSILON && Tuv.z > FLT_EPSILON && (Tuv.y + Tuv.z - 1.0f) < FLT_EPSILON) //Values for u and v are correct
+    {
+        if((Tuv.x - 1.0f) > FLT_EPSILON)
+        {
+            //We have an intersection, we return it the intersection vertex
+            return arg.getPointOnRay(Tuv.x);
+        }
+        //no intersection TODO Choose better return value when we don't have an intersection
+        return vertex();
+    }
+    //no intersection
+    return vertex();
 }

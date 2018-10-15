@@ -19,3 +19,8 @@ vertex ray::endPoint()
 {
     return end;
 }
+
+vertex ray::getPointOnRay(float t)
+{
+    return vertex(start.coordinates + t*(end.coordinates-start.coordinates));
+}

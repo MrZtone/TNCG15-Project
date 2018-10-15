@@ -1,6 +1,11 @@
 
 #include "../Headers/scene.h"
 
+triangle& scene::getWallTriangle(int index)
+{
+    return walls[index];
+};
+
 scene::scene()
 {
     colordbl WHITE= colordbl(1.0,1.0,1.0);

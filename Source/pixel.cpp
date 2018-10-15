@@ -3,3 +3,7 @@
 //
 
 #include "../Headers/pixel.h"
+
+pixel::pixel(ray r) {
+    rays[0] = r;
+}
