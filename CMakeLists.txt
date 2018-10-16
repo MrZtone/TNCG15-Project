@@ -3,4 +3,4 @@ project(Project)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(Project main.cpp Headers/vertex.h Source/vertex.cpp Source/direction.cpp Headers/direction.h Source/colordbl.cpp Headers/colordbl.h Source/ray.cpp Headers/ray.h Source/triangle.cpp Headers/triangle.h Source/scene.cpp Headers/scene.h Source/pixel.cpp Headers/pixel.h Source/camera.cpp Headers/camera.h)
+add_executable(Project main.cpp Headers/vertex.h Source/vertex.cpp Source/direction.cpp Headers/direction.h Source/colordbl.cpp Headers/colordbl.h Source/ray.cpp Headers/ray.h Source/triangle.cpp Headers/triangle.h Source/scene.cpp Headers/scene.h Source/pixel.cpp Headers/pixel.h Source/camera.cpp Headers/camera.h Source/Sphere.cpp Headers/Sphere.h Source/Shape.cpp Headers/Shape.h)

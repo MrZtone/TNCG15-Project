@@ -1,6 +1,3 @@
-//
-// Created by Ola Steen on 2018-09-12.
-//
 
 #ifndef PROJECT_TRIANGLE_H
 #define PROJECT_TRIANGLE_H
