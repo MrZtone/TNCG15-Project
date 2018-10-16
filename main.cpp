@@ -1,7 +1,12 @@
 #include <iostream>
-#include "glm/mat4x4.hpp"
+#include "Headers/camera.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
+    camera* cam = new camera();
+    scene scn;
+    cam->render(scn);
+    cam->createImage();
+    std::cout << "hey there" << std::endl;
+    delete cam;
     return 0;
 }

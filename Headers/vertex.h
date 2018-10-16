@@ -13,10 +13,10 @@ private:
     glm::vec4 coordinates;
 
 public:
-
     vertex();
     vertex(double X, double Y, double Z, double W);
     vertex(glm::vec4 c);
+    friend bool operator!=(const vertex& X, const vertex& Y);
 
 };
 

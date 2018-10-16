@@ -21,3 +21,8 @@ vertex::vertex(glm::vec4 c)
 {
     coordinates = c;
 }
+
+bool operator!=(const vertex& X, const vertex& Y)
+{
+    return (X.coordinates != Y.coordinates);
+}

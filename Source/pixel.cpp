@@ -4,6 +4,26 @@
 
 #include "../Headers/pixel.h"
 
+pixel::pixel()
+{
+    rays[0] = ray(vertex(), vertex());
+}
+
 pixel::pixel(ray r) {
     rays[0] = r;
+}
+
+ray& pixel::getrays(int index)
+{
+    return rays[index];
+}
+
+void pixel::setcolor(colordbl pixelColor)
+{
+    p_color = pixelColor;
+}
+
+colordbl pixel::getColor()
+{
+    return p_color;
 }
