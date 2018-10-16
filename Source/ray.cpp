@@ -29,6 +29,5 @@ vertex ray::endPoint()
 
 vertex ray::getPointOnRay(float t)
 {
-    std::cout << "beep boop I'm a ray" << std::endl;
     return vertex(start.coordinates + t*(end.coordinates-start.coordinates));
 }

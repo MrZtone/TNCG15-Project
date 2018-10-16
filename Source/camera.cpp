@@ -39,11 +39,11 @@ void camera::render(scene& sc)
                 //send ray towards every scene
                 for(int triangleIndex = 0; triangleIndex < scene::SIZE; ++triangleIndex)
                 {
-                    std::cout << "one ray" << std::endl;
                     if(sc.getWallTriangle(triangleIndex).rayIntersection(r) != vertex())
                     {
                         //we have an intersection
-                        viewplane[i][j].setcolor(sc.getWallTriangle(triangleIndex).getColor());
+                        colordbl vertexColor= sc.getWallTriangle(triangleIndex).getColor();
+                        viewplane[i][j].setcolor(vertexColor);
                         //TODO Add support for multiple intersections! atm we cancel once we find one
                         break;
                     }
@@ -71,15 +71,18 @@ void camera::createImage()
         {
             int x=i;
             int y=(height-1)-j;
-            int r = (int) viewplane[i][j].getColor()[0]*255;
+            float R = viewplane[i][j].getColor()[0]*255.0;
+            int r = (int) R;
             r = r > 255 ? 255: r;
             r = r < 0 ? 0: r;
-            int g = (int) viewplane[i][j].getColor()[1]*255;
-            r = g > 255 ? 255: g;
-            r = g < 0 ? 0: g;
-            int b = (int) viewplane[i][j].getColor()[2]*255;
-            r = b > 255 ? 255: b;
-            r = b < 0 ? 0: b;
+            float G =viewplane[i][j].getColor()[1]*255.0;
+            int g = (int) G;
+            g = g > 255 ? 255: g;
+            g = g < 0 ? 0: g;
+            float B =viewplane[i][j].getColor()[2]*255.0;
+            int b = (int) B;
+            b = b > 255 ? 255: b;
+            b = b < 0 ? 0: b;
             img[(x+y*width)*3+2] = (unsigned char)(r);
             img[(x+y*width)*3+1] = (unsigned char)(g);
             img[(x+y*width)*3+0] = (unsigned char)(b);

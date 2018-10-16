@@ -9,7 +9,7 @@ colordbl::colordbl()
     color = glm::vec3(0.0, 0.0, 0.0);
 }
 
-colordbl::colordbl(double R, double G, double B)
+colordbl::colordbl(float R, float G, float B)
 {
     color = glm::vec3(R, G, B);
 }

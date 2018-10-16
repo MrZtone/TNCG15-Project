@@ -12,7 +12,7 @@ private:
 
 public:
     colordbl();
-    colordbl(double R, double G, double B);
+    colordbl(float R, float G, float B);
     const float& operator[](int i);
    friend  std::ostream& operator<<(std::ostream& os, const colordbl& obj);
 
