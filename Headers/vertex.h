@@ -3,6 +3,9 @@
 #define PROJECT_VERTEX_H
 
 #include "../glm/vec4.hpp"
+#include "../glm/vec3.hpp"
+#include "../glm/geometric.hpp"
+
 
 class vertex
 {
@@ -17,6 +20,7 @@ public:
     vertex();
     vertex(double X, double Y, double Z, double W);
     vertex(glm::vec4 c);
+    glm::vec3 operator-(vertex& arg1);
 
 };
 

@@ -21,3 +21,8 @@ vertex::vertex(glm::vec4 c)
 {
     coordinates = c;
 }
+
+glm::vec3 vertex::operator -(vertex& arg1){
+    glm::vec3 vector;
+    vector = glm::vec3(arg1.coordinates - coordinates);
+}
