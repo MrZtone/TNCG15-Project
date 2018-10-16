@@ -22,14 +22,11 @@ vertex::vertex(glm::vec4 c)
     coordinates = c;
 }
 
-<<<<<<< HEAD
 glm::vec3 vertex::operator -(vertex& arg1){
     glm::vec3 vector;
     vector = glm::vec3(arg1.coordinates - coordinates);
 }
-=======
 bool operator!=(const vertex& X, const vertex& Y)
 {
     return (X.coordinates != Y.coordinates);
 }
->>>>>>> 4fe94f93cd2112caf27301d6d3a0d287d9777920
