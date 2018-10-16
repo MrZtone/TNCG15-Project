@@ -12,7 +12,7 @@ Sphere::Sphere(vertex POSITION,float RADIUS){
     sphere_center = POSITION;
 }
 
-float Sphere::set_t(float T){
+void Sphere::set_t(float T){
     t = T;
 }
 

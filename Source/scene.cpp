@@ -39,10 +39,13 @@ scene::scene()
     //THEM SNEA-WALLSEN
     walls[16]= triangle(vertex(-3.0, 0.0, -5.0, 0.0), vertex(0.0, -6.0, -5.0, 0.0), vertex(0.0, -6.0, 5.0, 0.0),colordbl(1.0, 1.0, 0.0), direction(0.8944, 0.4472, 0.0));
     walls[17]= triangle(vertex(-3.0, 0.0, -5.0, 0.0), vertex(0.0, -6.0, 5.0, 0.0), vertex(-3.0, 0.0, 5.0, 0.0),colordbl(1.0, 1.0, 0.0), direction(0.8944, 0.4472, 0.0));
+
     walls[18]= triangle(vertex(0.0, 6.0, -5.0, 0.0), vertex(-3.0, 0.0, -5.0, 0.0), vertex(-3.0, 0.0, 5.0, 0.0),colordbl(0.0, 1.0, 1.0), direction(-0.8944, 0.4472, 0.0));
     walls[19]= triangle(vertex(0.0, 6.0, -5.0, 0.0), vertex(-3.0, 0.0, 5.0, 0.0), vertex(0.0, 6.0, 5.0, 0.0),colordbl(0.0, 1.0, 1.0), direction(-0.8944, 0.4472, 0.0));
+
     walls[20]= triangle(vertex(13.0, 0.0, -5.0, 0.0), vertex(10.0, 6.0, -5.0, 0.0), vertex(10.0, 6.0, 5.0, 0.0),colordbl(1.0, 0.0, 1.0), direction(-0.8944, -0.4472, 0.0));
     walls[21]= triangle(vertex(13.0, 0.0, -5.0, 0.0), vertex(10.0, 6.0, 5.0, 0.0), vertex(13.0, 0.0, 5.0, 0.0),colordbl(1.0, 0.0, 1.0), direction(-0.8944, -0.4472, 0.0));
+
     walls[22]= triangle(vertex(10.0, -6.0, -5.0, 0.0), vertex(13.0, 0.0, -5.0, 0.0), vertex(13.0, 0.0, 5.0, 0.0),colordbl(0.4, 0.1, 0.8), direction(0.8944, -0.4472, 0.0));
     walls[23]= triangle(vertex(10.0, -6.0, -5.0, 0.0), vertex(13.0, 0.0, 5.0, 0.0), vertex(10.0, -6.0, 5.0, 0.0),colordbl(0.4, 0.1, 0.8), direction(0.8944, -0.4472, 0.0));
 }

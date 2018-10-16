@@ -22,4 +22,5 @@ const float& colordbl::operator[](int i)
 std::ostream& operator<<(std::ostream& os, const colordbl& obj)
 {
     os << "(" << obj.color.x << ", " << obj.color.y << ", " << obj.color.z << ")";
+    return os;
 }

@@ -7,6 +7,7 @@
 #include "triangle.h"
 #include "ray.h"
 #include "scene.h"
+#include "Sphere.h"
 
 
 class camera {

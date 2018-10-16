@@ -64,22 +64,21 @@ void camera::createImage()
     img = (unsigned char *)malloc(3*width*height);
     memset(img,0,3*width*height);
 
-    int picture[width][height];
     for(int i = 0; i < width; ++i)
     {
         for(int j = 0; j < height; ++j)
         {
             int x=i;
             int y=(height-1)-j;
-            float R = viewplane[i][j].getColor()[0]*255.0;
+            float R = viewplane[i][j].getColor()[0]*255.0f;
             int r = (int) R;
             r = r > 255 ? 255: r;
             r = r < 0 ? 0: r;
-            float G =viewplane[i][j].getColor()[1]*255.0;
+            float G =viewplane[i][j].getColor()[1]*255.0f;
             int g = (int) G;
             g = g > 255 ? 255: g;
             g = g < 0 ? 0: g;
-            float B =viewplane[i][j].getColor()[2]*255.0;
+            float B =viewplane[i][j].getColor()[2]*255.0f;
             int b = (int) B;
             b = b > 255 ? 255: b;
             b = b < 0 ? 0: b;
