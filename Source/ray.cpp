@@ -3,6 +3,13 @@
 //
 
 #include "../Headers/ray.h"
+#include <iostream>
+
+ray::ray()
+{
+    start =vertex();
+    end = vertex();
+}
 
 ray::ray(vertex S, vertex E)
 {
@@ -22,5 +29,6 @@ vertex ray::endPoint()
 
 vertex ray::getPointOnRay(float t)
 {
+    std::cout << "beep boop I'm a ray" << std::endl;
     return vertex(start.coordinates + t*(end.coordinates-start.coordinates));
 }

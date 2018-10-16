@@ -22,6 +22,7 @@ public:
     triangle();
     triangle(vertex v1, vertex v2, vertex v3, colordbl color, direction norm);
     vertex rayIntersection(ray arg);
+    colordbl getColor();
 
 };
 

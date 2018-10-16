@@ -3,7 +3,7 @@
 #define PROJECT_RAY_H
 
 #include "vertex.h"
-#include "colordbl.cpp"
+#include "colordbl.h"
 
 //TODO: Add reference to the intersection triangle
 

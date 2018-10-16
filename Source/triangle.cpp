@@ -1,6 +1,7 @@
 
 #include "../Headers/triangle.h"
 #include "../glm/glm.hpp"
+#include <iostream>
 
 triangle::triangle()
 {
@@ -15,6 +16,8 @@ triangle::triangle(vertex v1, vertex v2, vertex v3, colordbl color, direction no
     t_normal = norm;
 }
 
+
+//THIS DOESNT WORK
 vertex triangle::rayIntersection(ray arg)
 {
     //Möller Trumbore algorithm
@@ -25,13 +28,15 @@ vertex triangle::rayIntersection(ray arg)
     glm::vec3 P = glm::cross(D, E2);
     glm::vec3 Q = glm::cross(T, E1);
 
-    glm::vec3 Tuv= glm::vec3(glm::dot(Q,E2), glm::dot(P,T), glm::dot(Q,D)) * (1/glm::dot(P,E2));
+    glm::vec3 Tuv= glm::vec3(glm::dot(Q,E2), glm::dot(P,T), glm::dot(Q,D)) * (1/glm::dot(P,E1));
+    std::cout << "u and v are " << Tuv.y << " and " << Tuv.z << std::endl;
 
     if(Tuv.y > FLT_EPSILON && Tuv.z > FLT_EPSILON && (Tuv.y + Tuv.z - 1.0f) < FLT_EPSILON) //Values for u and v are correct
     {
         if((Tuv.x - 1.0f) > FLT_EPSILON)
         {
             //We have an intersection, we return it the intersection vertex
+            std::cout << "we have an intersection" << std::endl;
             return arg.getPointOnRay(Tuv.x);
         }
         //no intersection TODO Choose better return value when we don't have an intersection
@@ -39,4 +44,9 @@ vertex triangle::rayIntersection(ray arg)
     }
     //no intersection
     return vertex();
+}
+
+colordbl triangle::getColor()
+{
+    return t_color;
 }

@@ -13,3 +13,13 @@ colordbl::colordbl(double R, double G, double B)
 {
     color = glm::vec3(R, G, B);
 }
+
+const float& colordbl::operator[](int i)
+{
+    return color[i];
+}
+
+std::ostream& operator<<(std::ostream& os, const colordbl& obj)
+{
+    os << "(" << obj.color.x << ", " << obj.color.y << ", " << obj.color.z << ")";
+}
