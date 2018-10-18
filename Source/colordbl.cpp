@@ -14,6 +14,11 @@ colordbl::colordbl(float R, float G, float B)
     color = glm::vec3(R, G, B);
 }
 
+colordbl::colordbl(glm::vec3 c)
+{
+    color = c;
+}
+
 const float& colordbl::operator[](int i)
 {
     return color[i];

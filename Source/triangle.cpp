@@ -17,7 +17,6 @@ triangle::triangle(vertex v1, vertex v2, vertex v3, colordbl color, direction no
 }
 
 
-//THIS DOESNT WORK
 vertex triangle::rayIntersection(ray arg)
 {
     //Möller Trumbore algorithm

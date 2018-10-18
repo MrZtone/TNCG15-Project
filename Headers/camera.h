@@ -8,16 +8,21 @@
 #include "ray.h"
 #include "scene.h"
 #include "Sphere.h"
+#include "../glm/mat4x4.hpp"
 
 
 class camera {
 
 public:
+    static const int maxDepth = 4;
+
     camera();
     static const int width = 800;
     static const int height = 800;
     void render(scene& sc); //assigns value to viewplane
     void createImage(); //converts viewplane values to RGB values
+    glm::mat4 toWorldCoordinates(vertex& v, ray& r, direction& N);
+    glm::vec3 castRay(ray& r, vertex& v, scene& sc, triangle& T, float importance, int depth);
 
 private:
     vertex eye1, eye2;

@@ -11,6 +11,7 @@ class vertex
 {
     friend class triangle;
     friend class ray;
+    friend class camera;
 
 private:
     glm::vec4 coordinates;
