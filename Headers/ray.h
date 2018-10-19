@@ -9,6 +9,7 @@
 
 
 class ray {
+    friend class camera;
 
 private:
     vertex start, end;

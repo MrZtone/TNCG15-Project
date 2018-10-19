@@ -11,6 +11,8 @@
 
 class direction
 {
+    friend class triangle;
+    friend class camera;
 private:
     glm::vec3 vectorCoordinates;
 

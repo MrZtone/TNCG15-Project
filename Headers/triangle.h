@@ -7,10 +7,12 @@
 #include "direction.h"
 #include "ray.h"
 
+
 //TODO: make a proper constructor
 
 
 class triangle {
+    friend class camera;
 
 private:
 
