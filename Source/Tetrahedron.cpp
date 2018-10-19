@@ -16,5 +16,5 @@ Tetrahedron::Tetrahedron(glm::vec4 P1, glm::vec4 P2, glm::vec4 P3, glm::vec4 P4)
 }
 
 vertex Tetrahedron::intersect(ray &arg) {
-
+    return vertex();
 }

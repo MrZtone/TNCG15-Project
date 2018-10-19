@@ -2,8 +2,6 @@
 #ifndef PROJECT_TRIANGLE_H
 #define PROJECT_TRIANGLE_H
 
-#include "vertex.h"
-#include "colordbl.h"
 #include "direction.h"
 #include "ray.h"
 

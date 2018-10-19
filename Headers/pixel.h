@@ -5,8 +5,6 @@
 #ifndef PROJECT_PIXEL_H
 #define PROJECT_PIXEL_H
 
-
-#include "colordbl.h"
 #include "ray.h"
 
 class pixel {

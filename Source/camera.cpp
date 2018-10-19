@@ -1,3 +1,4 @@
+#define _USE_MATH_DEFINES
 
 #include "../Headers/camera.h"
 #include <stdio.h>
@@ -6,6 +7,7 @@
 #include "../glm/matrix.hpp"
 #include <cstdlib>
 #include <math.h>
+#include <cmath>
 
 
 camera::camera()
@@ -123,8 +125,6 @@ void camera::createImage()
     free(img);
     fclose(f);
     std::cout << "image written to file" << std::endl;
-<<<<<<< HEAD
-=======
     std::cout << "Intersectioncounter is " << intersectCounter << std::endl;
 }
 
@@ -227,5 +227,4 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, triangle& T, float impor
     totalRadiance.g =totalRadiance.g < 0.0f ? 0.0f : totalRadiance.g;
     totalRadiance.b = totalRadiance.b < 0.0f ? 0.0f : totalRadiance.b;
     return totalRadiance;
->>>>>>> 9cb6f994c29d64ddef6037b0d1b9fcaf6a455aa8
 }

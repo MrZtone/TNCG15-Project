@@ -2,9 +2,7 @@
 #ifndef PROJECT_CAMERA_H
 #define PROJECT_CAMERA_H
 
-#include "vertex.h"
 #include "pixel.h"
-#include "triangle.h"
 #include "ray.h"
 #include "scene.h"
 #include "Sphere.h"
