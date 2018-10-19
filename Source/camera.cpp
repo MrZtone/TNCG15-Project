@@ -26,34 +26,38 @@ camera::camera()
             viewplane[i][j] = pixel(ray(eye1, vertex(0.0, rayY, rayZ, 1.0)));
         }
     }
+    intersectCounter=0;
 }
 
 void camera::render(scene& sc)
 {
     std::cout << "starting render" << std::endl;
-    for(int i = 0; i < width; ++i )
+    for(int i = 0; i < height; ++i )
     {
-        for(int j= 0; j < height; ++j)
+        for(int j= 0; j < width; ++j)
         {
             //go through each ray in the pixel
             for(int rayIndex = 0; rayIndex < pixel::numOfRays; ++rayIndex )
             {
-
                 ray& r = viewplane[i][j].getrays(rayIndex);
                 //send ray towards every scene
                 for(int triangleIndex = 0; triangleIndex < scene::SIZE; ++triangleIndex)
                 {
-                    if(sc.getWallTriangle(triangleIndex).rayIntersection(r) != vertex())
+                    vertex vert = sc.getWallTriangle(triangleIndex).rayIntersection(r);
+                    if(vert != vertex())
                     {
                         //we have an intersection
-                        colordbl vertexColor= sc.getWallTriangle(triangleIndex).getColor();
+                        //colordbl vertexColor= sc.getWallTriangle(triangleIndex).getColor();
+                        colordbl vertexColor= castRay(r, vert, sc, sc.getWallTriangle(triangleIndex), 1.0f, 0);
                         viewplane[i][j].setcolor(vertexColor);
+                        //std::cout << vertexColor << std::endl;
                         //TODO Add support for multiple intersections! atm we cancel once we find one
                         break;
                     }
                 }
             }
         }
+        std::cout << "one column rendered" << std::endl;
     }
     std::cout << "render finished" << std::endl;
 }
@@ -74,15 +78,15 @@ void camera::createImage()
         {
             int x=i;
             int y=(height-1)-j;
-            float R = viewplane[i][j].getColor()[0]*255.0f;
+            float R = (viewplane[i][j].getColor()[0]*255.0f)/1.0f;
             int r = (int) R;
             r = r > 255 ? 255: r;
             r = r < 0 ? 0: r;
-            float G =viewplane[i][j].getColor()[1]*255.0f;
+            float G = (viewplane[i][j].getColor()[1]*255.0f)/1.0f;
             int g = (int) G;
             g = g > 255 ? 255: g;
             g = g < 0 ? 0: g;
-            float B =viewplane[i][j].getColor()[2]*255.0f;
+            float B = (viewplane[i][j].getColor()[2]*255.0f)/1.0f;
             int b = (int) B;
             b = b > 255 ? 255: b;
             b = b < 0 ? 0: b;
@@ -122,17 +126,18 @@ void camera::createImage()
     free(img);
     fclose(f);
     std::cout << "image written to file" << std::endl;
+    std::cout << "Intersectioncounter is " << intersectCounter << std::endl;
 }
 
 glm::mat4 camera::toWorldCoordinates(vertex& v, ray& r, direction& N)
 {
-    glm::vec3 Z = N.vectorCoordinates;
+    glm::vec3 Z = glm::normalize(N.vectorCoordinates);
     glm::vec3 I = glm::vec3(r.startPoint().coordinates) - glm::vec3(r.endPoint().coordinates);
-    glm::vec3 X = glm::normalize(I - (I*Z)*Z);
-    glm::vec3 Y = -(glm::cross(X,Z));
+    glm::vec3 X = glm::normalize(I - (glm::dot(I,Z)*Z));
+    glm::vec3 Y = (glm::cross(-X,Z));
 
-    glm::mat4 M1 = glm::mat4(1.0f);
-    glm::mat4 M2 = glm::mat4(1.0f);
+    glm::mat4 M1(1.0f);
+    glm::mat4 M2(1.0f);
     M1[0][0] = X.x;
     M1[1][0] = X.y;
     M1[2][0] = X.z;
@@ -143,9 +148,9 @@ glm::mat4 camera::toWorldCoordinates(vertex& v, ray& r, direction& N)
     M1[1][2] = Z.y;
     M1[2][2] = Z.z;
 
-    M2[0][3] = - v.coordinates.x;
-    M2[1][3] = - v.coordinates.y;
-    M2[2][3] = - v.coordinates.z;
+    M2[0][3] = -v.coordinates.x;
+    M2[1][3] = -v.coordinates.y;
+    M2[2][3] = -v.coordinates.z;
 
     return glm::inverse(M1*M2);
 }
@@ -153,12 +158,17 @@ glm::mat4 camera::toWorldCoordinates(vertex& v, ray& r, direction& N)
 //This is one dimensional, we need to return colors
 glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, triangle& T, float importance, int depth)
 {
-    const int numOfDiffuseRays = 16;
+
+    glm::vec3 cool = glm::normalize(glm::vec3(5.0f, 0.0f, 4.0f) - glm::vec3(v.coordinates));
+    float local = fabs(glm::dot(cool, glm::normalize(T.t_normal.vectorCoordinates)));
+    const int numOfDiffuseRays = 6;
     if(depth >= maxDepth)
     {
+        //5.0, 0.0, 4.0
         //RETURN LOCAL LIGHTING
-        return (T.t_color.color);
+        return (T.t_color.color)*local;
     }
+
     /* if(specular)
      * calculate reflected ray
      * castRay(reflected ray, some_kind_of_importance, depth+1)
@@ -178,11 +188,12 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, triangle& T, float impor
     {
         float theta = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(M_PI/2)));
         float phi = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(M_PI*2)));
-        glm::vec3 cart(cosf(phi)*sinf(theta), sinf(phi)*sinf(theta), cosf(theta));
+        glm::vec4 cart(cosf(phi)*sinf(theta), sinf(phi)*sinf(theta), cosf(theta), 1.0f);
         glm::mat4 M = toWorldCoordinates(v, r, T.t_normal);
-        glm::vec3 outgoing = glm::vec3(M*glm::vec4(cart, 1.0));
-        vertex rayEndpoint(glm::vec4(outgoing, 0.0f));
+        glm::vec4 outgoing = M*cart;
+        vertex rayEndpoint(outgoing);
         ray outgoingRay = ray(v, rayEndpoint);
+        float outgoingImportance = importance * fabs(glm::dot(((glm::vec3(cart))/glm::length(glm::vec3(cart))), T.t_normal.vectorCoordinates)/M_PI);
 
         for(int triangleIndex = 0; triangleIndex < scene::SIZE; ++triangleIndex)
         {
@@ -190,11 +201,10 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, triangle& T, float impor
             vertex vert = sc.getWallTriangle(triangleIndex).rayIntersection(outgoingRay);
             if(vert != vertex())
             {
+                intersectCounter++;
                 //we have an intersection
-                //float outgoingImportance = (cosf(glm::angle(T.t_normal.vectorCoordinates, outgoing))*cosf(glm::angle(sc.getWallTriangle(triangleIndex).t_normal.vectorCoordinates, -outgoing)))/powf(glm::length(outgoing), 2.0f));
-                float outgoingImportance = glm::dot(outgoing, (T.t_normal.vectorCoordinates/glm::length(T.t_normal.vectorCoordinates)))/M_PI;
                 importanceArray[i] = outgoingImportance;
-                raddianceArray[i] = castRay(outgoingRay, vert, sc, sc.getWallTriangle(triangleIndex), outgoingImportance, ++depth);
+                raddianceArray[i] = castRay(outgoingRay, vert, sc, sc.getWallTriangle(triangleIndex), outgoingImportance, depth+1);
                 //TODO Add support for multiple intersections! atm we cancel once we find one
                 break;
             }
@@ -207,11 +217,15 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, triangle& T, float impor
      * return radiance
      */
 
-    glm::vec3 totalRadiance;
+    glm::vec3 totalRadiance(0.0f, 0.0f, 0.0f);
     for(int i = 0; i < numOfDiffuseRays; ++i)
     {
-        totalRadiance += raddianceArray[i]*importanceArray[i];
+        glm::vec3 temp = raddianceArray[i]*importanceArray[i];
+        totalRadiance = totalRadiance + temp;
     }
-
-    return (totalRadiance/importance)/((float)numOfDiffuseRays);
+    totalRadiance = (totalRadiance/importance)/((float)numOfDiffuseRays)+ (T.t_color.color)*local;
+    totalRadiance.r = totalRadiance.r < 0.0f ? 0.0f : totalRadiance.r;
+    totalRadiance.g =totalRadiance.g < 0.0f ? 0.0f : totalRadiance.g;
+    totalRadiance.b = totalRadiance.b < 0.0f ? 0.0f : totalRadiance.b;
+    return totalRadiance;
 }

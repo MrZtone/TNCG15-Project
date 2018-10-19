@@ -14,11 +14,12 @@
 class camera {
 
 public:
-    static const int maxDepth = 4;
+    static const int maxDepth = 2;
 
     camera();
-    static const int width = 800;
-    static const int height = 800;
+    static const int width = 200;
+    static const int height = 200;
+    int intersectCounter;
     void render(scene& sc); //assigns value to viewplane
     void createImage(); //converts viewplane values to RGB values
     glm::mat4 toWorldCoordinates(vertex& v, ray& r, direction& N);
