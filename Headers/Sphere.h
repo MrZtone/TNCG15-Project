@@ -18,7 +18,7 @@ public:
 
     Sphere();
     Sphere(vertex POSITION, float RADIUS);
-    vertex sphereIntersect(ray& arg);
+    vertex intersect(ray& arg);
     void set_t(float T);
 
 

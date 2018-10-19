@@ -1,13 +1,11 @@
 
 #include "../Headers/Sphere.h"
 
-Sphere::Sphere(){
-    sphere_center = vertex(0.0, 0.0, 0.0, 0.0);
+Sphere::Sphere(): sphere_center(glm::vec4(0.0, 0.0, 0.0, 0.0)), radius(0.0){
 }
 
 
 Sphere::Sphere(vertex POSITION,float RADIUS){
-
     radius = RADIUS;
     sphere_center = POSITION;
 }
@@ -17,8 +15,7 @@ void Sphere::set_t(float T){
 }
 
 //TODO: Add a type for the sphere (surface)
-vertex Sphere::sphereIntersect(ray &arg) {
-
+vertex Sphere::intersect(ray &arg) {
     float t0, t1;
 
     //A geometric solution for the intersection problem
@@ -43,7 +40,6 @@ vertex Sphere::sphereIntersect(ray &arg) {
     t1 = tca + thc;
 
     //Now we implement our boundaries to determine how we actually intersect with the sphere
-
     if(t0 > t1)
         std::swap(t0, t1);
 
@@ -52,6 +48,5 @@ vertex Sphere::sphereIntersect(ray &arg) {
         if(t0 < 0)
             return vertex(); //This means that even t1 is negative, then we're surely not intersecting
     }
-
     return arg.getPointOnRay(t0);
 }
