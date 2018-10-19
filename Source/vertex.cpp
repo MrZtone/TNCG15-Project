@@ -10,16 +10,33 @@
 vertex::vertex()
 {
     coordinates = glm::vec4(0.0, 0.0, 0.0, 0.0);
+    v_color = nullptr;
+    v_normal = nullptr;
+    surface= -1;
+    storesNormal =false;
 }
 
-vertex::vertex(double X, double Y, double Z, double W)
+vertex::vertex(double X, double Y, double Z, double W, colordbl* c, direction* n, int s, bool sN)
 {
     coordinates = glm::vec4(X, Y, Z, W);
+    v_color = c;
+    v_normal = n;
+    surface = s;
+    storesNormal =sN;
 }
 
-vertex::vertex(glm::vec4 c)
+vertex::vertex(glm::vec4 cor, colordbl* col , direction* n, int s, bool sN)
 {
-    coordinates = c;
+    coordinates = cor;
+    v_color = col;
+    v_normal = n;
+    surface = s;
+    storesNormal =sN;
+}
+vertex::~vertex()
+{
+    if (storesNormal)
+        delete v_normal;
 }
 
 glm::vec3 vertex::operator -(vertex& arg1){

@@ -190,7 +190,7 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, triangle& T, float impor
         glm::vec4 cart(cosf(phi)*sinf(theta), sinf(phi)*sinf(theta), cosf(theta), 1.0f);
         glm::mat4 M = toWorldCoordinates(v, r, T.t_normal);
         glm::vec4 outgoing = M*cart;
-        vertex rayEndpoint(outgoing);
+        vertex rayEndpoint(outgoing, nullptr, nullptr, -1);
         ray outgoingRay = ray(v, rayEndpoint);
         float outgoingImportance = importance * fabs(glm::dot(((glm::vec3(cart))/glm::length(glm::vec3(cart))), T.t_normal.vectorCoordinates)/M_PI);
 

@@ -19,7 +19,7 @@ public:
     ray(vertex S, vertex E);
     vertex startPoint();
     vertex endPoint();
-    vertex getPointOnRay(float t);
+    glm::vec4 getPointOnRay(float t);
 
 };
 

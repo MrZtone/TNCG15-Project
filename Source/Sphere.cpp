@@ -1,13 +1,14 @@
 
 #include "../Headers/Sphere.h"
 
-Sphere::Sphere(): sphere_center(glm::vec4(0.0, 0.0, 0.0, 0.0)), radius(0.0){
+Sphere::Sphere(): sphere_center(glm::vec4(0.0, 0.0, 0.0, 1.0), nullptr, nullptr, -1), radius(0.0){
 }
 
 
-Sphere::Sphere(vertex POSITION,float RADIUS){
+Sphere::Sphere(vertex POSITION,float RADIUS, colordbl c){
     radius = RADIUS;
     sphere_center = POSITION;
+    s_color = c;
 }
 
 void Sphere::set_t(float T){
@@ -48,5 +49,8 @@ vertex Sphere::intersect(ray &arg) {
         if(t0 < 0)
             return vertex(); //This means that even t1 is negative, then we're surely not intersecting
     }
-    return arg.getPointOnRay(t0);
+
+    glm::vec4 endpoint = arg.getPointOnRay(t0);
+    glm::vec3 norm = glm::normalize(glm::vec3(endpoint-sphere_center.coordinates));
+    return vertex(endpoint, &s_color, new direction(norm), vertex::DIFFUSE);
 }

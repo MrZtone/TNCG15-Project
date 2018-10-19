@@ -27,7 +27,10 @@ vertex ray::endPoint()
     return end;
 }
 
-vertex ray::getPointOnRay(float t)
+glm::vec4 ray::getPointOnRay(float t)
 {
-    return vertex(start.coordinates + t*(end.coordinates-start.coordinates));
+    glm::vec4 temp = start.coordinates + t*(end.coordinates-start.coordinates);
+    temp[3] = 1.0f;
+
+    return temp;
 }

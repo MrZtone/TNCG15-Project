@@ -7,13 +7,13 @@ triangle::triangle()
 {
 }
 
-triangle::triangle(vertex v1, vertex v2, vertex v3, colordbl color, direction norm)
+triangle::triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, colordbl color, direction norm, int s)
 {
-    t_vertices[0] = v1;
-    t_vertices[1] = v2;
-    t_vertices[2] = v3;
     t_color = color;
     t_normal = norm;
+    t_vertices[0] = vertex(glm::vec4(v1, 1.0f), &t_color, &t_normal, vertex::DIFFUSE);
+    t_vertices[1] = vertex(glm::vec4(v2, 1.0f), &t_color, &t_normal, vertex::DIFFUSE);
+    t_vertices[2] = vertex(glm::vec4(v3, 1.0f), &t_color, &t_normal, vertex::DIFFUSE);
 }
 
 
@@ -34,7 +34,7 @@ vertex triangle::rayIntersection(ray arg)
         if((Tuv.x - 1.0f) > FLT_EPSILON)
         {
             //We have an intersection, we return it the intersection vertex
-            return arg.getPointOnRay(Tuv.x);
+            return vertex(arg.getPointOnRay(Tuv.x), &t_color, &t_normal, vertex::DIFFUSE);
         }
         //no intersection TODO Choose better return value when we don't have an intersection
         return vertex();

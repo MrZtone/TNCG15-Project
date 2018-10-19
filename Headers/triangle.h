@@ -2,7 +2,7 @@
 #ifndef PROJECT_TRIANGLE_H
 #define PROJECT_TRIANGLE_H
 
-#include "direction.h"
+
 #include "ray.h"
 
 
@@ -20,7 +20,7 @@ private:
 
 public:
     triangle();
-    triangle(vertex v1, vertex v2, vertex v3, colordbl color, direction norm);
+    triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, colordbl color, direction norm, int s);
     vertex rayIntersection(ray arg);
     colordbl getColor();
 

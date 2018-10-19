@@ -13,3 +13,8 @@ direction::direction(double X, double Y, double Z)
 {
     vectorCoordinates = glm::vec3(X, Y, Z);
 }
+
+direction::direction(glm::vec3 vC)
+{
+    vectorCoordinates = vC;
+}
