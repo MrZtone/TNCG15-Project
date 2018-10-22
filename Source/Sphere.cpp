@@ -16,16 +16,19 @@ void Sphere::set_t(float T){
 }
 
 //TODO: Add a type for the sphere (surface)
+
 vertex Sphere::intersect(ray &arg) {
     float t0, t1;
 
     //A geometric solution for the intersection problem
     vertex rayOrigin = arg.startPoint();
     vertex rayEnd = arg.endPoint();
-    glm::vec3 L = sphere_center - rayOrigin;
-    glm::vec3 D = rayEnd - rayOrigin;
+    glm::vec3 L = glm::vec3(sphere_center.coordinates - rayOrigin.coordinates);
+    glm::vec3 D = glm::normalize(glm::vec3(rayEnd.coordinates - rayOrigin.coordinates));
 
     float tca = glm::dot(L, D);
+    if (tca < 0.0f) // the center of the sphere is behind the origin of the ray
+        return  vertex();
 
     //We use d2 = d^2 since it's easier to use for our calculations
     float d2 = dot(L, L) - tca*tca;
@@ -34,7 +37,7 @@ vertex Sphere::intersect(ray &arg) {
     if(d2 >radius*radius)
         return vertex();
 
-    float thc = sqrt(radius*radius - d2);
+    float thc = sqrtf(radius*radius - d2);
 
     //Our two solutions to the quadratic problem we get by doing a geometric solution!
     t0 = tca - thc;
@@ -50,7 +53,8 @@ vertex Sphere::intersect(ray &arg) {
             return vertex(); //This means that even t1 is negative, then we're surely not intersecting
     }
 
-    glm::vec4 endpoint = arg.getPointOnRay(t0);
+    //glm::vec4 endpoint = arg.getPointOnRay(t0);
+    glm::vec4 endpoint = glm::vec4((glm::vec3(arg.startPoint().coordinates) + t0*D), 1.0f);
     glm::vec3 norm = glm::normalize(glm::vec3(endpoint-sphere_center.coordinates));
-    return vertex(endpoint, &s_color, new direction(norm), vertex::DIFFUSE);
+    return vertex(endpoint, &s_color, (new direction(norm)), vertex::SPECULAR);
 }

@@ -18,3 +18,5 @@ direction::direction(glm::vec3 vC)
 {
     vectorCoordinates = vC;
 }
+
+direction::~direction() {}

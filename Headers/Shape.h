@@ -21,7 +21,7 @@ protected:
 public:
     Shape();
     virtual ~Shape();
-    virtual vertex intersect(ray& arg) const = 0;
+    virtual vertex intersect(ray& arg)  = 0;
 };
 
 #endif //PROJECT_SHAPE_H

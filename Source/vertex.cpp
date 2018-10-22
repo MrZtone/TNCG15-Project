@@ -33,10 +33,24 @@ vertex::vertex(glm::vec4 cor, colordbl* col , direction* n, int s, bool sN)
     surface = s;
     storesNormal =sN;
 }
+vertex::vertex(const vertex& v)
+{
+    coordinates =v.coordinates;
+    v_color = v.v_color;
+    surface = v.surface;
+    storesNormal = v.storesNormal;
+    if(v.storesNormal)
+        v_normal = new direction(v.v_normal->vectorCoordinates);
+    else
+        v_normal=v.v_normal;
+}
 vertex::~vertex()
 {
-    if (storesNormal)
+    if (storesNormal && v_normal != nullptr)
+    {
         delete v_normal;
+        v_normal = nullptr;
+    }
 }
 
 glm::vec3 vertex::operator -(vertex& arg1){
@@ -47,4 +61,9 @@ glm::vec3 vertex::operator -(vertex& arg1){
 bool operator!=(const vertex& X, const vertex& Y)
 {
     return (X.coordinates != Y.coordinates);
+}
+
+float vertex::distance(vertex& v)
+{
+    return glm::length(glm::vec3(coordinates - v.coordinates));
 }

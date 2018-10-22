@@ -13,6 +13,7 @@ class direction
 {
     friend class triangle;
     friend class camera;
+    friend class vertex;
 
 private:
     glm::vec3 vectorCoordinates;
@@ -21,4 +22,5 @@ public:
     direction();
     direction(double X, double Y, double Z);
     direction(glm::vec3 vC);
+    ~direction();
 };

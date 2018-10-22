@@ -27,9 +27,11 @@ public:
     vertex();
     vertex(double X, double Y, double Z, double W, colordbl* c = nullptr, direction* n = nullptr, int s = -1, bool sN =false);
     vertex(glm::vec4 cor, colordbl* col = nullptr , direction* n = nullptr, int s = -1, bool sN =false);
+    vertex(const vertex& v);
     ~vertex();
     glm::vec3 operator-(vertex& arg1);
     friend bool operator!=(const vertex& X, const vertex& Y);
+    float distance(vertex& v);
     static const int DIFFUSE =1, SPECULAR =2;
 
 };

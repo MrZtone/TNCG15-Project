@@ -1,5 +1,6 @@
 
 #include "../Headers/scene.h"
+#include <limits>
 
 triangle& scene::getWallTriangle(int index)
 {
@@ -48,4 +49,24 @@ scene::scene()
 
     walls[22]= triangle(glm::vec3(10.0, -6.0, -5.0), glm::vec3(13.0, 0.0, -5.0), glm::vec3(13.0, 0.0, 5.0),colordbl(0.4, 0.1, 0.8), direction(0.8944, -0.4472, 0.0), vertex::DIFFUSE);
     walls[23]= triangle(glm::vec3(10.0, -6.0, -5.0), glm::vec3(13.0, 0.0, 5.0), glm::vec3(10.0, -6.0, 5.0),colordbl(0.4, 0.1, 0.8), direction(0.8944, -0.4472, 0.0), vertex::DIFFUSE);
+}
+
+vertex scene::intersect(ray& arg)
+{
+    vertex closest;
+    float shortestDistance = std::numeric_limits<float>::max();
+    for(int i =0; i< SIZE; ++i)
+    {
+        vertex intersection = walls[i].rayIntersection(arg);
+        if(intersection != vertex())
+        {
+            float distance = arg.startPoint().distance(intersection);
+            if (distance < shortestDistance)
+            {
+                shortestDistance = distance;
+                closest = intersection;
+            }
+        }
+    }
+    return closest;
 }
