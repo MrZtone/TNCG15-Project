@@ -35,7 +35,7 @@ vertex triangle::rayIntersection(ray arg)
             //We have an intersection, we return it the intersection vertex
             return vertex(arg.getPointOnRay(Tuv.x), &t_color, &t_normal, vertex::DIFFUSE);
         }
-        //no intersection TODO Choose better return value when we don't have an intersection
+        //no intersection TODO: Choose better return value when we don't have an intersection
         return vertex();
     }
     //no intersection
