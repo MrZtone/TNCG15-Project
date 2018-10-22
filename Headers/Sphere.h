@@ -1,6 +1,8 @@
 #pragma once
+#define GLM_ENABLE_EXPERIMENTAL
 
 #include "Shape.h"
+#include "../glm/gtx/intersect.hpp"
 
 class Sphere: public Shape {
 

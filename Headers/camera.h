@@ -12,12 +12,14 @@
 class camera {
 
 public:
-    static const int maxDepth = 2;
+    static const int maxDepth = 3;
+    static bool MultiThread;
 
     camera();
     static const int width = 200;
     static const int height = 200;
     int intersectCounter;
+    static int pixelCounter;
     scene* scn;
     Sphere* sph;
     lightsource* lightso;

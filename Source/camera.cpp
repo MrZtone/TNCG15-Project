@@ -12,6 +12,8 @@
 #include <thread>
 #include <vector>
 
+int camera::pixelCounter = 0;
+bool camera::MultiThread = true;
 
 void camera::setPointers(scene* scne, Sphere* sp, lightsource* ls)
 {
@@ -27,14 +29,17 @@ void multirender(camera* cam, int quadrantIndex[])
         for(int j= quadrantIndex[2]; j <= quadrantIndex[3]; ++j)
         {
             //go through each ray in the pixel
+            glm::vec3 pixelColor(0.0f);
             for(int rayIndex = 0; rayIndex < pixel::numOfRays; ++rayIndex )
             {
                 vertex vert = cam->findClosestIntersection(cam->getPixel(i,j).getrays(rayIndex), *(cam->scn), *(cam->sph), 0);
-                colordbl vertexColor= cam->castRay(cam->getPixel(i,j).getrays(rayIndex), vert, *(cam->scn), *(cam->sph), 1.0f, 0, *(cam->lightso));
-                cam->getPixel(i,j).setcolor(vertexColor);
+                glm::vec3 vertexColor= cam->castRay(cam->getPixel(i,j).getrays(rayIndex), vert, *(cam->scn), *(cam->sph), 1.0f, 0, *(cam->lightso));
+                pixelColor+=vertexColor;
             }
-            float allPixels = (float) cam->width*cam->height;
-            //std::cout << 100.0f*(i*cam->width + j + 1.0f)/allPixels << " % complete" << std::endl;
+            pixelColor/=pixel::numOfRays;
+            cam->getPixel(i,j).setcolor(pixelColor);
+            camera::pixelCounter++;
+            std::cout << 100.0f*((float) camera::pixelCounter)/(camera::width*camera::height) << "%" << std::endl;
         }
     }
     std::cout << "render finished" << std::endl;
@@ -43,17 +48,21 @@ void multirender(camera* cam, int quadrantIndex[])
 
 camera::camera()
 {
-    eye1 = vertex(-2.0, 0.0, 0.0, 1.0);
-    eye2 = vertex(-1.0, 0.0, 0.0, 1.0);
+    eye1 = vertex(-2.0f, 0.0f, 0.0f, 1.0f);
+    eye2 = vertex(-1.0f, 0.0f, 0.0f, 1.0f);
     double pixelsize= 2.0/width;
     for(int i= 0; i < width; ++i)
     {
         for(int j= 0; j < height; ++j)
         {
-            //calculate endpoint for ray (on the viewplane)
-            double rayY = (-1.0 + 2.0*i/width) + pixelsize/2.0;
-            double rayZ = (-1.0 + 2.0*j/height) + pixelsize/2.0;
-            viewplane[i][j] = pixel(ray(eye1, vertex(0.0, rayY, rayZ, 1.0)));
+            ray rays[pixel::numOfRays];
+            for(int l = 0; l < pixel::numOfRays; ++l)
+            {
+                float rayY = (-1.0 + 2.0*i/width) + (rand()) / (static_cast <float> (RAND_MAX/pixelsize));
+                float rayZ = (-1.0 + 2.0*j/height) + (rand()) / (static_cast <float> (RAND_MAX/pixelsize));
+                rays[l] = ray(eye1, vertex(0.0, rayY, rayZ, 1.0));
+            }
+            viewplane[i][j] = pixel(rays);
         }
     }
     intersectCounter=0;
@@ -62,12 +71,12 @@ camera::camera()
 void camera::render(scene& sc, Sphere& s, lightsource& light)
 {
 
-    if(true) //make thread mode
+    if(MultiThread) //make thread mode
     {
-        int dims1[] = {0,99,0,99};
-        int dims2[] = {100,199,0,99};
-        int dims3[] = {0,99,100,199};
-        int dims4[] = {100,199,100,199};
+        int dims1[] = {0,(width/2)-1,0,(height/2)-1};
+        int dims2[] = {width/2,width-1,0,(height/2)-1};
+        int dims3[] = {0,(width/2)-1,height/2,height-1};
+        int dims4[] = {width/2,width-1,height/2,height-1};
 
         std::thread t1 = std::thread{multirender, this, dims1};
         std::thread t2 = std::thread{multirender, this, dims2};
@@ -78,27 +87,29 @@ void camera::render(scene& sc, Sphere& s, lightsource& light)
         t2.join();
         t3.join();
         t4.join();
-
+        return;
     }
-    /*
+
     std::cout << "starting render" << std::endl;
     for(int i = 0; i < height; ++i )
     {
         for(int j= 0; j < width; ++j)
         {
             //go through each ray in the pixel
+            glm::vec3 pixelColor(0.0f);
             for(int rayIndex = 0; rayIndex < pixel::numOfRays; ++rayIndex )
             {
                 vertex vert = findClosestIntersection(viewplane[i][j].getrays(rayIndex), sc, s, 0);
-                colordbl vertexColor= castRay(viewplane[i][j].getrays(rayIndex), vert, sc, s, 1.0f, 0, light);
-                viewplane[i][j].setcolor(vertexColor);
+                glm::vec3 vertexColor= castRay(viewplane[i][j].getrays(rayIndex), vert, sc, s, 1.0f, 0, light);
+                pixelColor+=vertexColor;
             }
+            pixelColor/=pixel::numOfRays;
+            viewplane[i][j].setcolor(pixelColor);
             float allPixels = (float) width*height;
-            std::cout << 100.0f*(i*width + j + 1.0f)/allPixels << " % complete" << std::endl;
+            std::cout << 100.0f*(i*width + j + 1.0f)/allPixels << " %" << std::endl;
         }
     }
     std::cout << "render finished" << std::endl;
-     */
 }
 
 void camera::createImage()
@@ -217,8 +228,9 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importa
         incomming = glm::inverse(M)*incomming;
         glm::vec3 outgoing = glm::reflect(glm::vec3(incomming), v.v_normal->vectorCoordinates);
         vertex rayEndpoint(M*glm::vec4(outgoing, 1.0f));
+        vertex rayStartpoint(glm::vec4(glm::vec3(v.coordinates) + 0.1f*outgoing, 1.0f));
 
-        ray outgoingRay = ray(v, rayEndpoint);
+        ray outgoingRay = ray(rayStartpoint, rayEndpoint);
 
         vertex vert = findClosestIntersection(outgoingRay, sc, s, depth);
         if(vert != vertex())
@@ -261,8 +273,9 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importa
             float phi = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(M_PI*2)));
             glm::vec4 cart(cosf(phi)*sinf(theta), sinf(phi)*sinf(theta), cosf(theta), 1.0f);
             glm::vec4 outgoing = M*cart;
+            vertex rayStartpoint(glm::vec4(glm::vec3(v.coordinates) + 0.5f*glm::vec3(cart), 1.0f));
             vertex rayEndpoint(outgoing);
-            ray outgoingRay = ray(v, rayEndpoint);
+            ray outgoingRay = ray(rayStartpoint, rayEndpoint);
             float outgoingImportance = importance * fabs(glm::dot(((glm::vec3(cart))/glm::length(glm::vec3(cart))), v.v_normal->vectorCoordinates)/M_PI);
 
             vertex vert = findClosestIntersection(outgoingRay, sc, s, depth);
@@ -307,7 +320,7 @@ vertex camera::findClosestIntersection(ray& r, scene& sc, Sphere& s, int depth)
 
     vertex vertSphere = s.intersect(r);
     float sphereDistance= r.startPoint().distance(vertSphere);
-    if(vertSphere != vertex() && sphereDistance < shortestDistance && fabs(sphereDistance) >= 3.0f)
+    if(vertSphere != vertex() && sphereDistance < shortestDistance && fabs(sphereDistance) >= 1.0f)
     {
         shortestDistance = r.startPoint().distance(vertSphere);
         return vertSphere;

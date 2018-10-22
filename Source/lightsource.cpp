@@ -61,7 +61,7 @@ vertex lightsource::findClosestIntersection(ray& r, scene& sc, Sphere& s)
 
     vertex vertSphere = s.intersect(r);
     float sphereDistance= r.startPoint().distance(vertSphere);
-    if(vertSphere != vertex() && sphereDistance < shortestDistance && fabs(sphereDistance) >= 3.0f)
+    if(vertSphere != vertex() && sphereDistance < shortestDistance && fabs(sphereDistance) >= 1.0f)
     {
         shortestDistance = r.startPoint().distance(vertSphere);
         return vertSphere;

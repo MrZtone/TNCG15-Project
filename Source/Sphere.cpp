@@ -21,11 +21,22 @@ vertex Sphere::intersect(ray &arg) {
     float t0, t1;
 
     //A geometric solution for the intersection problem
-    vertex rayOrigin = arg.startPoint();
-    vertex rayEnd = arg.endPoint();
-    glm::vec3 L = glm::vec3(sphere_center.coordinates - rayOrigin.coordinates);
-    glm::vec3 D = glm::normalize(glm::vec3(rayEnd.coordinates - rayOrigin.coordinates));
+    //vertex rayOrigin = arg.startPoint();
+    //vertex rayEnd = arg.endPoint();
+    //glm::vec3 L = glm::vec3(sphere_center.coordinates - rayOrigin.coordinates);
+    //glm::vec3 D = glm::normalize(glm::vec3(rayEnd.coordinates - rayOrigin.coordinates));
 
+    glm::vec3 intersection(0.0f);
+    glm::vec3 normal(0.0f);
+    glm::vec3 origin = arg.startPoint().coordinates;
+    glm::vec3 dir = glm::normalize(glm::vec3(arg.endPoint().coordinates - arg.startPoint().coordinates));
+    glm::vec3 center = sphere_center.coordinates;
+
+    if(glm::intersectRaySphere(origin, dir, center, radius, intersection, normal))
+        return vertex(glm::vec4(intersection, 1.0f), &s_color, new direction(normal), vertex::SPECULAR);
+    else
+        return vertex();
+    /*
     float tca = glm::dot(L, D);
     if (tca < 0.0f) // the center of the sphere is behind the origin of the ray
         return  vertex();
@@ -57,4 +68,5 @@ vertex Sphere::intersect(ray &arg) {
     glm::vec4 endpoint = glm::vec4((glm::vec3(arg.startPoint().coordinates) + t0*D), 1.0f);
     glm::vec3 norm = glm::normalize(glm::vec3(endpoint-sphere_center.coordinates));
     return vertex(endpoint, &s_color, (new direction(norm)), vertex::SPECULAR);
+    */
 }
