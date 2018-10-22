@@ -12,6 +12,7 @@ class vertex
     friend class camera;
     friend class Sphere;
     friend class lightsource;
+    friend class Tetrahedron;
 
 private:
     glm::vec4 coordinates;
