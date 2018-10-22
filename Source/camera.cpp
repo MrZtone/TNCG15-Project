@@ -29,7 +29,7 @@ camera::camera()
     intersectCounter=0;
 }
 
-void camera::render(scene& sc, Sphere& s)
+void camera::render(scene& sc, Sphere& s, lightsource& light)
 {
     std::cout << "starting render" << std::endl;
     for(int i = 0; i < height; ++i )
@@ -40,7 +40,7 @@ void camera::render(scene& sc, Sphere& s)
             for(int rayIndex = 0; rayIndex < pixel::numOfRays; ++rayIndex )
             {
                 vertex vert = findClosestIntersection(viewplane[i][j].getrays(rayIndex), sc, s, 0);
-                colordbl vertexColor= castRay(viewplane[i][j].getrays(rayIndex), vert, sc, s, 1.0f, 0);
+                colordbl vertexColor= castRay(viewplane[i][j].getrays(rayIndex), vert, sc, s, 1.0f, 0, light);
                 viewplane[i][j].setcolor(vertexColor);
             }
             float allPixels = (float) width*height;
@@ -66,15 +66,15 @@ void camera::createImage()
         {
             int x=i;
             int y=(height-1)-j;
-            float R = (viewplane[i][j].getColor()[0]*255.0f)/1.0f;
+            float R = (viewplane[i][j].getColor()[0]*255.0f)/5.0f;
             int r = (int) R;
             r = r > 255 ? 255: r;
             r = r < 0 ? 0: r;
-            float G = (viewplane[i][j].getColor()[1]*255.0f)/1.0f;
+            float G = (viewplane[i][j].getColor()[1]*255.0f)/5.0f;
             int g = (int) G;
             g = g > 255 ? 255: g;
             g = g < 0 ? 0: g;
-            float B = (viewplane[i][j].getColor()[2]*255.0f)/1.0f;
+            float B = (viewplane[i][j].getColor()[2]*255.0f)/5.0f;
             int b = (int) B;
             b = b > 255 ? 255: b;
             b = b < 0 ? 0: b;
@@ -144,12 +144,14 @@ glm::mat4 camera::toWorldCoordinates(vertex& v, ray& r)
 }
 
 //This is one dimensional, we need to return colors
-glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importance, int depth)
+glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importance, int depth, lightsource& light)
 {
 
     glm::vec3 cool = glm::normalize(glm::vec3(5.0f, 0.0f, 4.0f) - glm::vec3(v.coordinates));
-    float local = fabs(glm::dot(cool, glm::normalize(v.v_normal->vectorCoordinates)));
-    const int numOfDiffuseRays = 6;
+    //float local = fabs(glm::dot(cool, glm::normalize(v.v_normal->vectorCoordinates)));
+    //std::cout << "intensity is " << light.calclight(v, sc, s) << std::endl;
+    float local = light.calclight(v, sc, s);
+    const int numOfDiffuseRays = 3;
     if(depth >= maxDepth)
     {
         //5.0, 0.0, 4.0
@@ -169,17 +171,15 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importa
         vertex vert = findClosestIntersection(outgoingRay, sc, s, depth);
         if(vert != vertex())
         {
-            /*
             if(vert.surface == vertex::SPECULAR)
             {
                 std::cout << "We have specular on specular reflection" << std::endl;
                 std::cout << v.distance(vert) << std::endl;
             }
-             */
             intersectCounter++;
             //we have an intersection
-            glm::vec3 ret = castRay(outgoingRay, vert, sc, s, importance, depth+1);
-            return ret + (v.v_color->color)*local;
+            glm::vec3 ret = castRay(outgoingRay, vert, sc, s, importance, depth+1, light);
+            return ret + 0.1f*(v.v_color->color)*local;
         }
 
 
@@ -219,7 +219,7 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importa
                 intersectCounter++;
                 //we have an intersection
                 importanceArray[i] = outgoingImportance;
-                raddianceArray[i] = castRay(outgoingRay, vert, sc, s, outgoingImportance, depth+1);
+                raddianceArray[i] = castRay(outgoingRay, vert, sc, s, outgoingImportance, depth+1, light);
             }
         }
 
@@ -255,12 +255,8 @@ vertex camera::findClosestIntersection(ray& r, scene& sc, Sphere& s, int depth)
 
     vertex vertSphere = s.intersect(r);
     float sphereDistance= r.startPoint().distance(vertSphere);
-    if(vertSphere != vertex() && sphereDistance < shortestDistance)// && fabs(sphereDistance) >= 0.5f)
+    if(vertSphere != vertex() && sphereDistance < shortestDistance && fabs(sphereDistance) >= 3.0f)
     {
-        if(depth == 0)
-        {
-            std::cout << "" << std::endl;
-        }
         shortestDistance = r.startPoint().distance(vertSphere);
         return vertSphere;
     }

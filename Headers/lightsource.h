@@ -1,14 +1,8 @@
-//
-// Created by Ola Steen on 2018-10-22.
-//
+#pragma once
 
-#ifndef PROJECT_LIGHTSOURCE_H
-#define PROJECT_LIGHTSOURCE_H
-
-#include "triangle.h"
 #include "scene.h"
 #include "Sphere.h"
-#include "../glm/glm.hpp""
+#include "../glm/glm.hpp"
 
 
 class lightsource {
@@ -18,11 +12,9 @@ private:
     float pointRaddiace;
 
 public:
-    static const int numOfSamples= 6;
+    static const int numOfSamples= 10;
     lightsource();
     float calclight(vertex& vert, scene& sc, Sphere& s);
+    vertex findClosestIntersection(ray& r, scene& sc, Sphere& s);
 
 };
-
-
-#endif //PROJECT_LIGHTSOURCE_H

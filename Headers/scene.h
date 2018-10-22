@@ -1,10 +1,6 @@
-//
-// Created by Ola Steen on 2018-09-12.
-//
+#pragma once
 
-#ifndef PROJECT_SCENE_H
-#define PROJECT_SCENE_H
-
+#include "vertex.h"
 #include "triangle.h"
 #include "Shape.h"
 
@@ -21,6 +17,3 @@ private:
      triangle walls[SIZE];
 
 };
-
-
-#endif //PROJECT_SCENE_H

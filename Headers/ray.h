@@ -1,9 +1,8 @@
-
-#ifndef PROJECT_RAY_H
-#define PROJECT_RAY_H
+#pragma once
 
 #include "vertex.h"
-#include "colordbl.h"
+
+
 
 //TODO: Add reference to the intersection triangle
 
@@ -24,6 +23,3 @@ public:
     glm::mat4 toWorldCoordinates(vertex& v);
 
 };
-
-
-#endif //PROJECT_RAY_H

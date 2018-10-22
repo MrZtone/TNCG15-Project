@@ -1,10 +1,6 @@
+#pragma once
+
 #include "Shape.h"
-#include "triangle.h"
-#include "ray.h"
-
-#ifndef PROJECT_SPHERE_H
-#define PROJECT_SPHERE_H
-
 
 class Sphere: public Shape {
 
@@ -24,6 +20,3 @@ public:
 
 
 };
-
-
-#endif //PROJECT_SPHERE_H

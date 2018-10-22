@@ -3,6 +3,9 @@
 //
 
 #include "../Headers/ray.h"
+#include "../Headers/scene.h"
+#include "../Headers/Sphere.h"
+
 #include <iostream>
 
 ray::ray()
@@ -38,8 +41,14 @@ glm::vec4 ray::getPointOnRay(float t)
 float ray::getCosine(vertex& vert)
 {
     glm::mat4 M = glm::inverse(toWorldCoordinates(vert));
-    glm::vec4 outgoingRay = M* glm::vec4(glm::normalize(glm::vec3(getPointOnRay(1.0f))), 1.0f);
-    return glm::dot(glm::vec3(outgoingRay), glm::vec3(vert.coordinates));
+    glm::vec3 outgoing = glm::normalize(glm::vec3(end.coordinates) - glm::vec3(start.coordinates));
+    glm::vec3 normal = glm::vec3(vert.v_normal->vectorCoordinates);
+
+    //std::cout << outgoing.x << " " << outgoing.y << " " << outgoing.z << std::endl;
+    //std::cout << normal.x << " " << normal.y << " " << normal.z << std::endl;
+
+    glm::vec4 outgoingRay = M* glm::vec4(outgoing, 1.0f);
+    return glm::dot(glm::vec3(outgoingRay), glm::vec3(vert.v_normal->vectorCoordinates));
 
 }
 

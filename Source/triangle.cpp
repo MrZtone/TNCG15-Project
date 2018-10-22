@@ -1,6 +1,5 @@
 
 #include "../Headers/triangle.h"
-#include "../glm/glm.hpp"
 #include <iostream>
 
 triangle::triangle()

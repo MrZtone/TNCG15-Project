@@ -1,12 +1,8 @@
+#pragma once
 
-#ifndef PROJECT_VERTEX_H
-#define PROJECT_VERTEX_H
-
-#include "../glm/vec4.hpp"
-#include "../glm/vec3.hpp"
-#include "../glm/geometric.hpp"
-#include "../Headers/colordbl.h"
-#include "../Headers/direction.h"
+#include "../glm/glm.hpp"
+#include "colordbl.h"
+#include "direction.h"
 
 
 class vertex
@@ -36,5 +32,3 @@ public:
     static const int DIFFUSE =1, SPECULAR =2;
 
 };
-
-#endif //PROJECT_VERTEX_H

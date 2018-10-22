@@ -1,6 +1,4 @@
-
-#ifndef PROJECT_TETRAHEDRON_H
-#define PROJECT_TETRAHEDRON_H
+#pragma once
 
 #include "vertex.h"
 #include "Shape.h"
@@ -18,6 +16,3 @@ public:
     vertex intersect(ray& arg);
 
 };
-
-
-#endif //PROJECT_TETRAHEDRON_H

@@ -1,8 +1,6 @@
+#pragma once
 
-#ifndef PROJECT_COLORDBL_H
-#define PROJECT_COLORDBL_H
-
-#include "../glm/vec3.hpp"
+#include "../glm/glm.hpp"
 #include <iostream>
 
 class colordbl {
@@ -20,5 +18,3 @@ public:
 
 };
 
-
-#endif //PROJECT_COLORDBL_H

@@ -1,9 +1,4 @@
-//
-// Created by Ola Steen on 2018-09-12.
-//
-
-#ifndef PROJECT_PIXEL_H
-#define PROJECT_PIXEL_H
+#pragma once
 
 #include "ray.h"
 
@@ -24,5 +19,3 @@ private:
 
 };
 
-
-#endif //PROJECT_PIXEL_H

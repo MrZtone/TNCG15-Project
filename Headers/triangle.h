@@ -1,8 +1,4 @@
-
-#ifndef PROJECT_TRIANGLE_H
-#define PROJECT_TRIANGLE_H
-
-
+#pragma once
 #include "ray.h"
 
 
@@ -26,6 +22,3 @@ public:
     colordbl getColor();
 
 };
-
-
-#endif //PROJECT_TRIANGLE_H
