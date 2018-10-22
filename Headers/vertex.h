@@ -15,6 +15,7 @@ class vertex
     friend class ray;
     friend class camera;
     friend class Sphere;
+    friend class lightsource;
 
 private:
     glm::vec4 coordinates;

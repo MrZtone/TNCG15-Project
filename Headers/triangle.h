@@ -11,6 +11,7 @@
 
 class triangle {
     friend class camera;
+    friend class lightsource;
 
 private:
 

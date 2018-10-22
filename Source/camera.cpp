@@ -160,7 +160,7 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importa
     if(v.surface == vertex::SPECULAR)
     {
         glm::mat4 M = toWorldCoordinates(v, r);
-        glm::vec4 incomming = glm::vec4(glm::vec3(r.startPoint().coordinates - r.endPoint().coordinates), 1.0f);
+        glm::vec4 incomming = glm::vec4(glm::vec3(r.endPoint().coordinates - r.startPoint().coordinates), 1.0f);
         incomming = glm::inverse(M)*incomming;
         float theta = acosf(incomming.z/sqrtf(powf(incomming.x, 2)+ powf(incomming.y, 2) + powf(incomming.z, 2)));
         vertex rayEndpoint(M*glm::vec4(-sinf(theta), 0.0f, cosf(theta), 1.0f));

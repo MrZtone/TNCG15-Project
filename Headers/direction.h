@@ -7,13 +7,14 @@
 
 #endif //PROJECT_DIRECTION_H
 
-#include "../glm/vec3.hpp"
+#include "../glm/glm.hpp"
 
 class direction
 {
     friend class triangle;
     friend class camera;
     friend class vertex;
+    friend class ray;
 
 private:
     glm::vec3 vectorCoordinates;

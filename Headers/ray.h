@@ -20,6 +20,8 @@ public:
     vertex startPoint();
     vertex endPoint();
     glm::vec4 getPointOnRay(float t);
+    float getCosine(vertex& vert);
+    glm::mat4 toWorldCoordinates(vertex& v);
 
 };
 
