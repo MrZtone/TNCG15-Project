@@ -9,6 +9,36 @@
 #include <math.h>
 #include <cmath>
 #include <limits>
+#include <thread>
+#include <vector>
+
+
+void camera::setPointers(scene* scne, Sphere* sp, lightsource* ls)
+{
+    scn = scne;
+    sph = sp;
+    lightso = ls;
+}
+void multirender(camera* cam, int quadrantIndex[])
+{
+    std::cout << "starting render" << std::endl;
+    for(int i = quadrantIndex[0]; i <= quadrantIndex[1]; ++i )
+    {
+        for(int j= quadrantIndex[2]; j <= quadrantIndex[3]; ++j)
+        {
+            //go through each ray in the pixel
+            for(int rayIndex = 0; rayIndex < pixel::numOfRays; ++rayIndex )
+            {
+                vertex vert = cam->findClosestIntersection(cam->getPixel(i,j).getrays(rayIndex), *(cam->scn), *(cam->sph), 0);
+                colordbl vertexColor= cam->castRay(cam->getPixel(i,j).getrays(rayIndex), vert, *(cam->scn), *(cam->sph), 1.0f, 0, *(cam->lightso));
+                cam->getPixel(i,j).setcolor(vertexColor);
+            }
+            float allPixels = (float) cam->width*cam->height;
+            //std::cout << 100.0f*(i*cam->width + j + 1.0f)/allPixels << " % complete" << std::endl;
+        }
+    }
+    std::cout << "render finished" << std::endl;
+}
 
 
 camera::camera()
@@ -31,6 +61,26 @@ camera::camera()
 
 void camera::render(scene& sc, Sphere& s, lightsource& light)
 {
+
+    if(true) //make thread mode
+    {
+        int dims1[] = {0,99,0,99};
+        int dims2[] = {100,199,0,99};
+        int dims3[] = {0,99,100,199};
+        int dims4[] = {100,199,100,199};
+
+        std::thread t1 = std::thread{multirender, this, dims1};
+        std::thread t2 = std::thread{multirender, this, dims2};
+        std::thread t3 = std::thread{multirender, this, dims3};
+        std::thread t4 = std::thread{multirender, this, dims4};
+
+        t1.join();
+        t2.join();
+        t3.join();
+        t4.join();
+
+    }
+    /*
     std::cout << "starting render" << std::endl;
     for(int i = 0; i < height; ++i )
     {
@@ -48,6 +98,7 @@ void camera::render(scene& sc, Sphere& s, lightsource& light)
         }
     }
     std::cout << "render finished" << std::endl;
+     */
 }
 
 void camera::createImage()
@@ -164,8 +215,9 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importa
         glm::mat4 M = toWorldCoordinates(v, r);
         glm::vec4 incomming = glm::vec4(glm::vec3(r.endPoint().coordinates - r.startPoint().coordinates), 1.0f);
         incomming = glm::inverse(M)*incomming;
-        float theta = acosf(incomming.z/sqrtf(powf(incomming.x, 2)+ powf(incomming.y, 2) + powf(incomming.z, 2)));
-        vertex rayEndpoint(M*glm::vec4(-sinf(theta), 0.0f, cosf(theta), 1.0f));
+        glm::vec3 outgoing = glm::reflect(glm::vec3(incomming), v.v_normal->vectorCoordinates);
+        vertex rayEndpoint(M*glm::vec4(outgoing, 1.0f));
+
         ray outgoingRay = ray(v, rayEndpoint);
 
         vertex vert = findClosestIntersection(outgoingRay, sc, s, depth);
@@ -261,4 +313,9 @@ vertex camera::findClosestIntersection(ray& r, scene& sc, Sphere& s, int depth)
         return vertSphere;
     }
     return vert;
+}
+
+pixel& camera::getPixel(int i, int j)
+{
+    return viewplane[i][j];
 }
