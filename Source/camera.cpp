@@ -229,11 +229,9 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importa
 
     if(v.surface == vertex::SPECULAR)
     {
-        glm::mat4 M = toWorldCoordinates(v, r);
         glm::vec4 incomming = glm::vec4(glm::vec3(r.endPoint().coordinates - r.startPoint().coordinates), 1.0f);
-        incomming = glm::inverse(M)*incomming;
-        glm::vec3 outgoing = glm::reflect(glm::vec3(incomming), v.v_normal->vectorCoordinates);
-        vertex rayEndpoint(M*glm::vec4(outgoing, 1.0f));
+        glm::vec3 outgoing = glm::normalize(glm::reflect(glm::vec3(incomming), v.v_normal->vectorCoordinates));
+        vertex rayEndpoint(glm::vec4(glm::vec3(v.coordinates) + outgoing, 1.0f));
         vertex rayStartpoint(glm::vec4(glm::vec3(v.coordinates) + 0.1f*outgoing, 1.0f));
 
         ray outgoingRay = ray(rayStartpoint, rayEndpoint);
