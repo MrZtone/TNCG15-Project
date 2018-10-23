@@ -12,7 +12,7 @@
 class camera {
 
 public:
-    static const int maxDepth = 3;
+    static const int maxDepth = 2;
     static bool MultiThread;
 
     camera();

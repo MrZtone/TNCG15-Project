@@ -33,8 +33,11 @@ void multirender(camera* cam, int quadrantIndex[])
             for(int rayIndex = 0; rayIndex < pixel::numOfRays; ++rayIndex )
             {
                 vertex vert = cam->findClosestIntersection(cam->getPixel(i,j).getrays(rayIndex), *(cam->scn), *(cam->sph), 0);
-                glm::vec3 vertexColor= cam->castRay(cam->getPixel(i,j).getrays(rayIndex), vert, *(cam->scn), *(cam->sph), 1.0f, 0, *(cam->lightso));
-                pixelColor+=vertexColor;
+                if(vert != vertex())
+                {
+                    glm::vec3 vertexColor= cam->castRay(cam->getPixel(i,j).getrays(rayIndex), vert, *(cam->scn), *(cam->sph), 1.0f, 0, *(cam->lightso));
+                    pixelColor+=vertexColor;
+                }
             }
             pixelColor/=pixel::numOfRays;
             cam->getPixel(i,j).setcolor(pixelColor);
@@ -60,7 +63,7 @@ camera::camera()
             {
                 float rayY = (-1.0 + 2.0*i/width) + (rand()) / (static_cast <float> (RAND_MAX/pixelsize));
                 float rayZ = (-1.0 + 2.0*j/height) + (rand()) / (static_cast <float> (RAND_MAX/pixelsize));
-                rays[l] = ray(eye1, vertex(0.0, rayY, rayZ, 1.0));
+                rays[l] = ray(eye2, vertex(0.0, rayY, rayZ, 1.0));
             }
             viewplane[i][j] = pixel(rays);
         }
@@ -71,7 +74,7 @@ camera::camera()
 void camera::render(scene& sc, Sphere& s, lightsource& light)
 {
 
-    if(MultiThread) //make thread mode
+    if(MultiThread)
     {
         int dims1[] = {0,(width/2)-1,0,(height/2)-1};
         int dims2[] = {width/2,width-1,0,(height/2)-1};
@@ -100,8 +103,11 @@ void camera::render(scene& sc, Sphere& s, lightsource& light)
             for(int rayIndex = 0; rayIndex < pixel::numOfRays; ++rayIndex )
             {
                 vertex vert = findClosestIntersection(viewplane[i][j].getrays(rayIndex), sc, s, 0);
-                glm::vec3 vertexColor= castRay(viewplane[i][j].getrays(rayIndex), vert, sc, s, 1.0f, 0, light);
-                pixelColor+=vertexColor;
+                if(vert != vertex())
+                {
+                    glm::vec3 vertexColor= castRay(viewplane[i][j].getrays(rayIndex), vert, sc, s, 1.0f, 0, light);
+                    pixelColor+=vertexColor;
+                }
             }
             pixelColor/=pixel::numOfRays;
             viewplane[i][j].setcolor(pixelColor);
@@ -128,15 +134,15 @@ void camera::createImage()
         {
             int x=i;
             int y=(height-1)-j;
-            float R = (viewplane[i][j].getColor()[0]*255.0f)/5.0f;
+            float R = (viewplane[i][j].getColor()[0]*255.0f)/1.0f;
             int r = (int) R;
             r = r > 255 ? 255: r;
             r = r < 0 ? 0: r;
-            float G = (viewplane[i][j].getColor()[1]*255.0f)/5.0f;
+            float G = (viewplane[i][j].getColor()[1]*255.0f)/1.0f;
             int g = (int) G;
             g = g > 255 ? 255: g;
             g = g < 0 ? 0: g;
-            float B = (viewplane[i][j].getColor()[2]*255.0f)/5.0f;
+            float B = (viewplane[i][j].getColor()[2]*255.0f)/1.0f;
             int b = (int) B;
             b = b > 255 ? 255: b;
             b = b < 0 ? 0: b;
@@ -213,7 +219,7 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importa
     //float local = fabs(glm::dot(cool, glm::normalize(v.v_normal->vectorCoordinates)));
     //std::cout << "intensity is " << light.calclight(v, sc, s) << std::endl;
     float local = light.calclight(v, sc, s);
-    const int numOfDiffuseRays = 3;
+    const int numOfDiffuseRays = 1;
     if(depth >= maxDepth)
     {
         //5.0, 0.0, 4.0
