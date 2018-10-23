@@ -3,6 +3,7 @@
 #include "scene.h"
 #include "Sphere.h"
 #include "../glm/glm.hpp"
+#include "Tetrahedron.h"
 
 
 class lightsource {
@@ -12,9 +13,9 @@ private:
     float pointRaddiace;
 
 public:
-    static const int numOfSamples= 10;
+    static const int numOfSamples= 25;
     lightsource();
-    float calclight(vertex& vert, scene& sc, Sphere& s);
-    vertex findClosestIntersection(ray& r, scene& sc, Sphere& s);
+    float calclight(vertex& vert, scene& sc, Sphere& s, Tetrahedron& tr);
+    vertex findClosestIntersection(ray& r, scene& sc, Sphere& s, Tetrahedron& tr);
 
 };

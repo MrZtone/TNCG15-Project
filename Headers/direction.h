@@ -7,6 +7,7 @@ class direction
     friend class camera;
     friend class vertex;
     friend class ray;
+    friend class lightsource;
 
 private:
     glm::vec3 vectorCoordinates;

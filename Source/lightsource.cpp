@@ -8,10 +8,10 @@
 lightsource::lightsource()
 {
     pointRaddiace = 100.0f;
-    l_surface = triangle(glm::vec3(9.0f, 0.0f, 4.0f), glm::vec3(5.0f, 2.0f, 4.0f), glm::vec3(5.0f, -2.0f, 4.0f), colordbl(1.0f, 1.0f, 1.0f), direction(0.0, 0.0, -1.0), vertex::DIFFUSE);
+    l_surface = triangle(glm::vec3(9.0f, 0.0f, 4.0f), glm::vec3(5.0f, 3.0f, 4.0f), glm::vec3(5.0f, -3.0f, 4.0f), colordbl(1.0f, 1.0f, 1.0f), direction(0.0, 0.0, -1.0), vertex::DIFFUSE);
 }
 
-float lightsource::calclight(vertex& vert, scene& sc, Sphere& s)
+float lightsource::calclight(vertex& vert, scene& sc, Sphere& s, Tetrahedron& tr)
 {
     float totalIntensity = 0.0f;
     for(int i = 0; i< numOfSamples; ++i)
@@ -24,13 +24,16 @@ float lightsource::calclight(vertex& vert, scene& sc, Sphere& s)
         }
 
         glm::vec3 surfacePoint = (1.0f-u-v)*l_surface.t_vertices[0].coordinates + u*l_surface.t_vertices[1].coordinates + v*l_surface.t_vertices[2].coordinates;
+        glm::vec3 direction = glm::normalize(surfacePoint - glm::vec3(vert.coordinates));
+        glm::vec3 start = glm::vec3(vert.coordinates) + 0.1f*direction;
+        vertex startPoint(glm::vec4(start, 1.0f));
         vertex endPoint(glm::vec4(surfacePoint, 1.0f), &l_surface.t_color, &l_surface.t_normal, vertex::DIFFUSE);
-        ray toLight(vert, endPoint);
-        ray toObject(endPoint, vert);
+        ray toLight(startPoint, endPoint);
+        ray toObject(endPoint, startPoint);
 
-        vertex intersectionVert = findClosestIntersection(toLight, sc, s);
+        vertex intersectionVert = findClosestIntersection(toLight, sc, s, tr);
 
-        if(vert.distance(intersectionVert) < vert.distance(endPoint))
+        if(intersectionVert != vertex() && vert.distance(intersectionVert) < vert.distance(endPoint))
             continue;
 
         float cosThetaOut = fmaxf(toObject.getCosine(vert), 0.0f);
@@ -41,26 +44,35 @@ float lightsource::calclight(vertex& vert, scene& sc, Sphere& s)
     }
     totalIntensity /= numOfSamples;
 
-    //std::cout << totalIntensity*pointRaddiace << std::endl;
     return totalIntensity*pointRaddiace;
 }
 
-vertex lightsource::findClosestIntersection(ray& r, scene& sc, Sphere& s)
+vertex lightsource::findClosestIntersection(ray& r, scene& sc, Sphere& s, Tetrahedron& tr)
 {
     float shortestDistance = std::numeric_limits<float>::max();//distance from camera to intersection
+    vertex returnVert;
     vertex vert = sc.intersect(r);
+
     if(vert != vertex())
     {
         //we have an intersection
         shortestDistance = r.startPoint().distance(vert);
+        returnVert=vert;
     }
 
-    vertex vertSphere = s.intersect(r);
-    float sphereDistance= r.startPoint().distance(vertSphere);
-    if(vertSphere != vertex() && sphereDistance < shortestDistance && fabs(sphereDistance) >= 1.0f)
+    vert = tr.intersect(r);
+    if(vert  != vertex() && r.startPoint().distance(vert) < shortestDistance)
     {
-        shortestDistance = r.startPoint().distance(vertSphere);
-        return vertSphere;
+        //we have an intersection
+        shortestDistance = r.startPoint().distance(vert);
+        returnVert=vert;
     }
-    return vert;
+    vert = s.intersect(r);
+    if(vert  != vertex() && r.startPoint().distance(vert) < shortestDistance)
+    {
+        shortestDistance = r.startPoint().distance(vert);
+        returnVert=vert;
+    }
+
+    return returnVert;
 }

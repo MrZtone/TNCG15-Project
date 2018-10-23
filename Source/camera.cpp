@@ -15,11 +15,12 @@
 int camera::pixelCounter = 0;
 bool camera::MultiThread = true;
 
-void camera::setPointers(scene* scne, Sphere* sp, lightsource* ls)
+void camera::setPointers(scene* scne, Sphere* sp, lightsource* ls, Tetrahedron* tr)
 {
     scn = scne;
     sph = sp;
     lightso = ls;
+    tetra= tr;
 }
 void multirender(camera* cam, int quadrantIndex[])
 {
@@ -32,10 +33,10 @@ void multirender(camera* cam, int quadrantIndex[])
             glm::vec3 pixelColor(0.0f);
             for(int rayIndex = 0; rayIndex < pixel::numOfRays; ++rayIndex )
             {
-                vertex vert = cam->findClosestIntersection(cam->getPixel(i,j).getrays(rayIndex), *(cam->scn), *(cam->sph), 0);
+                vertex vert = cam->findClosestIntersection(cam->getPixel(i,j).getrays(rayIndex), *(cam->scn), *(cam->sph), *(cam->tetra));
                 if(vert != vertex())
                 {
-                    glm::vec3 vertexColor= cam->castRay(cam->getPixel(i,j).getrays(rayIndex), vert, *(cam->scn), *(cam->sph), 1.0f, 0, *(cam->lightso));
+                    glm::vec3 vertexColor= cam->castRay(cam->getPixel(i,j).getrays(rayIndex), vert, *(cam->scn), *(cam->sph), 1.0f, 0, *(cam->lightso), *(cam->tetra));
                     pixelColor+=vertexColor;
                 }
             }
@@ -71,7 +72,7 @@ camera::camera()
     intersectCounter=0;
 }
 
-void camera::render(scene& sc, Sphere& s, lightsource& light)
+void camera::render(scene& sc, Sphere& s, lightsource& light, Tetrahedron& tr)
 {
 
     if(MultiThread)
@@ -102,10 +103,10 @@ void camera::render(scene& sc, Sphere& s, lightsource& light)
             glm::vec3 pixelColor(0.0f);
             for(int rayIndex = 0; rayIndex < pixel::numOfRays; ++rayIndex )
             {
-                vertex vert = findClosestIntersection(viewplane[i][j].getrays(rayIndex), sc, s, 0);
+                vertex vert = findClosestIntersection(viewplane[i][j].getrays(rayIndex), sc, s, tr);
                 if(vert != vertex())
                 {
-                    glm::vec3 vertexColor= castRay(viewplane[i][j].getrays(rayIndex), vert, sc, s, 1.0f, 0, light);
+                    glm::vec3 vertexColor= castRay(viewplane[i][j].getrays(rayIndex), vert, sc, s, 1.0f, 0, light, tr);
                     pixelColor+=vertexColor;
                 }
             }
@@ -211,19 +212,13 @@ glm::mat4 camera::toWorldCoordinates(vertex& v, ray& r)
     return glm::inverse(M1*M2);
 }
 
-//This is one dimensional, we need to return colors
-glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importance, int depth, lightsource& light)
+glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importance, int depth, lightsource& light, Tetrahedron& tr)
 {
-
-    //glm::vec3 cool = glm::normalize(glm::vec3(5.0f, 0.0f, 4.0f) - glm::vec3(v.coordinates));
-    //float local = fabs(glm::dot(cool, glm::normalize(v.v_normal->vectorCoordinates)));
-    //std::cout << "intensity is " << light.calclight(v, sc, s) << std::endl;
-    float local = light.calclight(v, sc, s);
+    float local = light.calclight(v, sc, s, tr);
     const int numOfDiffuseRays = 1;
+
     if(depth >= maxDepth)
     {
-        //5.0, 0.0, 4.0
-        //RETURN LOCAL LIGHTING
         return (v.v_color->color)*local;
     }
 
@@ -236,36 +231,15 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importa
 
         ray outgoingRay = ray(rayStartpoint, rayEndpoint);
 
-        vertex vert = findClosestIntersection(outgoingRay, sc, s, depth);
+        vertex vert = findClosestIntersection(outgoingRay, sc, s, tr);
         if(vert != vertex())
         {
-            if(vert.surface == vertex::SPECULAR)
-            {
-                std::cout << "We have specular on specular reflection" << std::endl;
-                std::cout << v.distance(vert) << std::endl;
-            }
             intersectCounter++;
-            //we have an intersection
-            glm::vec3 ret = castRay(outgoingRay, vert, sc, s, importance, depth+1, light);
+            glm::vec3 ret = castRay(outgoingRay, vert, sc, s, importance, depth+1, light, tr);
             return ret + 0.1f*(v.v_color->color)*local;
         }
-
-
     }
-    /* if(specular)
-     * calculate reflected ray
-     * castRay(reflected ray, some_kind_of_importance, depth+1)
-     * get radiance back from castRay
-     */
-
-    /* if(diffuse)
-     * randomise numOfDiffuseRays many pairs of theta and phi
-     * translate vector with spherical coordinates (theta, phi, 1) to cartesian
-     * translate local cartesian coordinates to world coordinates. we call this vector R
-     * castRay(R, some_kind_of_importance, depth+1)
-     * get radiance back from castRay
-     */
-    if(v.surface==vertex::DIFFUSE)
+    else if(v.surface==vertex::DIFFUSE)
     {
         glm::vec3 raddianceArray[numOfDiffuseRays] = {glm::vec3(0.0f, 0.0f, 0.0f)};
         float importanceArray[numOfDiffuseRays] = {0.0f};
@@ -277,26 +251,19 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importa
             float phi = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(M_PI*2)));
             glm::vec4 cart(cosf(phi)*sinf(theta), sinf(phi)*sinf(theta), cosf(theta), 1.0f);
             glm::vec4 outgoing = M*cart;
-            vertex rayStartpoint(glm::vec4(glm::vec3(v.coordinates) + 0.5f*glm::vec3(cart), 1.0f));
+            vertex rayStartpoint(glm::vec4(glm::vec3(v.coordinates) + 0.1f*glm::vec3(cart), 1.0f));
             vertex rayEndpoint(outgoing);
             ray outgoingRay = ray(rayStartpoint, rayEndpoint);
             float outgoingImportance = importance * fabs(glm::dot(((glm::vec3(cart))/glm::length(glm::vec3(cart))), v.v_normal->vectorCoordinates)/M_PI);
 
-            vertex vert = findClosestIntersection(outgoingRay, sc, s, depth);
+            vertex vert = findClosestIntersection(outgoingRay, sc, s, tr);
             if(vert != vertex())
             {
                 intersectCounter++;
-                //we have an intersection
                 importanceArray[i] = outgoingImportance;
-                raddianceArray[i] = castRay(outgoingRay, vert, sc, s, outgoingImportance, depth+1, light);
+                raddianceArray[i] = castRay(outgoingRay, vert, sc, s, outgoingImportance, depth+1, light, tr);
             }
         }
-
-        /* calculate radiance based on reflected rays's radiance and importance
-         * calculate local light contribution
-         * calculate total radiance
-         * return radiance
-         */
 
         glm::vec3 totalRadiance(0.0f, 0.0f, 0.0f);
         for(int i = 0; i < numOfDiffuseRays; ++i)
@@ -312,24 +279,33 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importa
     }
 }
 
-vertex camera::findClosestIntersection(ray& r, scene& sc, Sphere& s, int depth)
+vertex camera::findClosestIntersection(ray& r, scene& sc, Sphere& s, Tetrahedron& tr)
 {
     float shortestDistance = std::numeric_limits<float>::max();//distance from camera to intersection
+    vertex returnVert;
     vertex vert = sc.intersect(r);
     if(vert != vertex())
     {
         //we have an intersection
         shortestDistance = r.startPoint().distance(vert);
+        returnVert=vert;
     }
 
-    vertex vertSphere = s.intersect(r);
-    float sphereDistance= r.startPoint().distance(vertSphere);
-    if(vertSphere != vertex() && sphereDistance < shortestDistance && fabs(sphereDistance) >= 1.0f)
+    vert = tr.intersect(r);
+    if(vert  != vertex() && r.startPoint().distance(vert) < shortestDistance)
     {
-        shortestDistance = r.startPoint().distance(vertSphere);
-        return vertSphere;
+        //we have an intersection
+        shortestDistance = r.startPoint().distance(vert);
+        returnVert=vert;
     }
-    return vert;
+
+    vert = s.intersect(r);
+    if(vert  != vertex() && r.startPoint().distance(vert) < shortestDistance)
+    {
+        shortestDistance = r.startPoint().distance(vert);
+        returnVert=vert;
+    }
+    return returnVert;
 }
 
 pixel& camera::getPixel(int i, int j)

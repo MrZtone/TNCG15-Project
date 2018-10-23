@@ -14,10 +14,11 @@ private:
     vertex t_vertices[3];
     colordbl t_color;
     direction t_normal;
+    int t_surface;
 
 public:
     triangle();
-    triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, colordbl color, direction norm, int s);
+    triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, colordbl color, direction norm, int s=-1);
     vertex rayIntersection(ray arg);
     colordbl getColor();
 
