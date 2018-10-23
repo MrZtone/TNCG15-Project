@@ -215,7 +215,7 @@ glm::mat4 camera::toWorldCoordinates(vertex& v, ray& r)
 glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importance, int depth, lightsource& light)
 {
 
-    glm::vec3 cool = glm::normalize(glm::vec3(5.0f, 0.0f, 4.0f) - glm::vec3(v.coordinates));
+    //glm::vec3 cool = glm::normalize(glm::vec3(5.0f, 0.0f, 4.0f) - glm::vec3(v.coordinates));
     //float local = fabs(glm::dot(cool, glm::normalize(v.v_normal->vectorCoordinates)));
     //std::cout << "intensity is " << light.calclight(v, sc, s) << std::endl;
     float local = light.calclight(v, sc, s);

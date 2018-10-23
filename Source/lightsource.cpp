@@ -8,7 +8,7 @@
 lightsource::lightsource()
 {
     pointRaddiace = 100.0f;
-    l_surface = triangle(glm::vec3(1.0f, 0.0f, 4.0f), glm::vec3(8.0f, 1.0f, 4.0f), glm::vec3(8.0f, -1.0f, 4.0f), colordbl(1.0f, 1.0f, 1.0f), direction(0.0, 0.0, -1.0), vertex::DIFFUSE);
+    l_surface = triangle(glm::vec3(9.0f, 0.0f, 4.0f), glm::vec3(5.0f, 2.0f, 4.0f), glm::vec3(5.0f, -2.0f, 4.0f), colordbl(1.0f, 1.0f, 1.0f), direction(0.0, 0.0, -1.0), vertex::DIFFUSE);
 }
 
 float lightsource::calclight(vertex& vert, scene& sc, Sphere& s)
@@ -17,7 +17,7 @@ float lightsource::calclight(vertex& vert, scene& sc, Sphere& s)
     for(int i = 0; i< numOfSamples; ++i)
     {
         float u = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
-        float v = 2.0;
+        float v = 2.0f;
         while (u+v > 1.0f)
         {
             v = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
@@ -33,12 +33,8 @@ float lightsource::calclight(vertex& vert, scene& sc, Sphere& s)
         if(vert.distance(intersectionVert) < vert.distance(endPoint))
             continue;
 
-        float cosThetaOut = fabs(toObject.getCosine(vert));
+        float cosThetaOut = fmaxf(toObject.getCosine(vert), 0.0f);
         float cosThetaIn = fmaxf(toLight.getCosine(endPoint), 0.0f);
-        if( cosThetaIn < 0.0f || cosThetaOut < 0.0f)
-        {
-            std::cout << "we have negatives" << std::endl;
-         }
         float distance = glm::length(glm::vec3(toLight.endPoint().coordinates)- glm::vec3(toLight.startPoint().coordinates));
 
         totalIntensity += (cosThetaOut*cosThetaIn)/pow(distance, 2.0f);
