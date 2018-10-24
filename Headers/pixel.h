@@ -8,7 +8,7 @@ public:
     pixel();
     pixel(ray r);
     pixel(ray rs[]);
-    static const int numOfRays = 4;
+    static const int numOfRays = 5;
     ray& getrays(int index);
     void setcolor(colordbl pixelColor);
     colordbl getColor();

@@ -254,7 +254,8 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importa
             vertex rayStartpoint(glm::vec4(glm::vec3(v.coordinates) + 0.1f*glm::vec3(cart), 1.0f));
             vertex rayEndpoint(outgoing);
             ray outgoingRay = ray(rayStartpoint, rayEndpoint);
-            float outgoingImportance = importance * fabs(glm::dot(((glm::vec3(cart))/glm::length(glm::vec3(cart))), v.v_normal->vectorCoordinates)/M_PI);
+            //float outgoingImportance = importance * fabs(glm::dot(((glm::vec3(cart))/glm::length(glm::vec3(cart))), v.v_normal->vectorCoordinates)/M_PI);
+            float outgoingImportance = importance/M_PI;
 
             vertex vert = findClosestIntersection(outgoingRay, sc, s, tr);
             if(vert != vertex())

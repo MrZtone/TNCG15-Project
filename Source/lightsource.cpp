@@ -8,7 +8,7 @@
 lightsource::lightsource()
 {
     pointRaddiace = 100.0f;
-    l_surface = triangle(glm::vec3(9.0f, 0.0f, 4.0f), glm::vec3(5.0f, 3.0f, 4.0f), glm::vec3(5.0f, -3.0f, 4.0f), colordbl(1.0f, 1.0f, 1.0f), direction(0.0, 0.0, -1.0), vertex::DIFFUSE);
+    l_surface = triangle(glm::vec3(7.5f, 0.0f, 4.8f), glm::vec3(5.0f, 0.5f, 4.8f), glm::vec3(5.0f, -0.5f, 4.8f), colordbl(1.0f, 1.0f, 1.0f), direction(0.0, 0.0, -1.0), vertex::DIFFUSE);
 }
 
 float lightsource::calclight(vertex& vert, scene& sc, Sphere& s, Tetrahedron& tr)

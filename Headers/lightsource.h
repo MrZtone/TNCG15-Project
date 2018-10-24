@@ -13,7 +13,7 @@ private:
     float pointRaddiace;
 
 public:
-    static const int numOfSamples= 25;
+    static const int numOfSamples= 10;
     lightsource();
     float calclight(vertex& vert, scene& sc, Sphere& s, Tetrahedron& tr);
     vertex findClosestIntersection(ray& r, scene& sc, Sphere& s, Tetrahedron& tr);
