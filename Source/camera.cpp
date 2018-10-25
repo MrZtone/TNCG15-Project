@@ -227,7 +227,7 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importa
         glm::vec4 incomming = glm::vec4(glm::vec3(r.endPoint().coordinates - r.startPoint().coordinates), 1.0f);
         glm::vec3 outgoing = glm::normalize(glm::reflect(glm::vec3(incomming), v.v_normal->vectorCoordinates));
         vertex rayEndpoint(glm::vec4(glm::vec3(v.coordinates) + outgoing, 1.0f));
-        vertex rayStartpoint(glm::vec4(glm::vec3(v.coordinates) + 0.1f*outgoing, 1.0f));
+        vertex rayStartpoint(glm::vec4(glm::vec3(v.coordinates) + 0.0001f*outgoing, 1.0f));
 
         ray outgoingRay = ray(rayStartpoint, rayEndpoint);
 
@@ -251,7 +251,7 @@ glm::vec3 camera::castRay(ray& r, vertex& v, scene& sc, Sphere& s, float importa
             float phi = static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(M_PI*2)));
             glm::vec4 cart(cosf(phi)*sinf(theta), sinf(phi)*sinf(theta), cosf(theta), 1.0f);
             glm::vec4 outgoing = M*cart;
-            vertex rayStartpoint(glm::vec4(glm::vec3(v.coordinates) + 0.1f*glm::vec3(cart), 1.0f));
+            vertex rayStartpoint(glm::vec4(glm::vec3(v.coordinates) + 0.0001f*glm::vec3(outgoing - v.coordinates), 1.0f));
             vertex rayEndpoint(outgoing);
             ray outgoingRay = ray(rayStartpoint, rayEndpoint);
             //float outgoingImportance = importance * fabs(glm::dot(((glm::vec3(cart))/glm::length(glm::vec3(cart))), v.v_normal->vectorCoordinates)/M_PI);
